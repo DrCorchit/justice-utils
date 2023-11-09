@@ -93,7 +93,7 @@ abstract class JsonDiff<T : JsonElement>(private val type: KClass<T>) {
             val output = JsonObject()
             output.addProperty("array", true)
             if (!remove.isEmpty()) {
-                output.add("remove", remove.stream().map { JsonPrimitive(it) }.collect(toArray()))
+                output.add("remove", remove.stream().map { JsonPrimitive(it) }.collect(JsonUtils.toArray()))
             }
             if (!add.isEmpty()) {
                 val addInfo = JsonObject()
@@ -167,7 +167,7 @@ abstract class JsonDiff<T : JsonElement>(private val type: KClass<T>) {
             val output = JsonObject()
             output.addProperty("array", false)
             if (!remove.isEmpty()) {
-                output.add("remove", remove.stream().map { JsonPrimitive(it) }.collect(toArray()))
+                output.add("remove", remove.stream().map { JsonPrimitive(it) }.collect(JsonUtils.toArray()))
             }
             if (!add.isEmpty()) {
                 val addInfo = JsonObject()
