@@ -12,6 +12,20 @@ import java.util.function.Function
 import java.util.stream.Collector
 import java.util.stream.Stream
 
+class JsonUtils {
+    companion object {
+        @JvmStatic
+        fun toArray(): Collector<JsonElement, *, JsonArray> {
+            return TO_ARRAY
+        }
+
+        @JvmStatic
+        fun toObject(): Collector<Pair<String, JsonElement>, *, JsonObject> {
+            return TO_OBJECT
+        }
+    }
+}
+
 val GSON: Gson = GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create()
 private val JSON_CACHE: LoadingCache<String, JsonElement> =
     createCache(1000) { path: String -> parseJsonFromAnywhere(path) }
@@ -76,14 +90,6 @@ private val TO_OBJECT = object : Collector<Pair<String, JsonElement>, JsonObject
     }
 }
 
-fun toArray(): Collector<JsonElement, *, JsonArray> {
-    return TO_ARRAY
-}
-
-fun toObject(): Collector<Pair<String, JsonElement>, *, JsonObject> {
-    return TO_OBJECT
-}
-
 fun Iterable<JsonElement>.toJsonArray(): JsonArray {
     val output = JsonArray()
     this.forEach { output.add(it) }
@@ -122,37 +128,33 @@ operator fun <T> JsonObject.get(
     return if (this.has(key)) rule.apply(this[key]) else def.get()
 }
 
-fun getInt(input: JsonObject, key: String, def: Number): Int {
-    return input[key, { def.toInt() }, { obj: JsonElement -> obj.asInt }]
+fun JsonObject.getInt(key: String, def: Number): Int {
+    return this[key, { def.toInt() }, { obj: JsonElement -> obj.asInt }]
 }
 
-fun getLong(input: JsonObject, key: String, def: Number): Long {
-    return input[key, { def.toLong() }, { obj: JsonElement -> obj.asLong }]
+fun JsonObject.getLong(key: String, def: Number): Long {
+    return this[key, { def.toLong() }, { obj: JsonElement -> obj.asLong }]
 }
 
-fun getDouble(input: JsonObject, key: String, def: Number): Double {
-    return input[key, { def.toDouble() }, { obj: JsonElement -> obj.asDouble }]
+fun JsonObject.getDouble(key: String, def: Number): Double {
+    return this[key, { def.toDouble() }, { obj: JsonElement -> obj.asDouble }]
 }
 
-fun getString(input: JsonObject, key: String, def: String): String {
-    return input[key, { def }, { it.asString }]
+fun JsonObject.getString(key: String, def: String): String {
+    return this[key, { def }, { it.asString }]
 }
 
-fun getArray(input: JsonObject, key: String): JsonArray {
-    return input[key, { JsonArray() }, { it.asJsonArray }]
+fun JsonObject.getArray(key: String): JsonArray {
+    return this[key, { JsonArray() }, { it.asJsonArray }]
 }
 
-fun getObject(input: JsonObject, key: String): JsonObject {
-    return input[key, { JsonObject() }, { it.asJsonObject }]
+fun JsonObject.getObject(key: String): JsonObject {
+    return this[key, { JsonObject() }, { it.asJsonObject }]
 }
 
 //Throws a null pointer exception if the key is missing
 fun getWhitelistedString(input: JsonObject, key: String): String {
     return input[key].asString.whitelist()
-}
-
-fun getWhitelistedString(input: JsonObject, key: String, def: String): String {
-    return getString(input, key, def).whitelist()
 }
 
 fun JsonArray.stream(input: JsonArray): Stream<JsonElement> {
