@@ -20,6 +20,7 @@ import com.google.gson.*
 import java.math.BigDecimal
 import java.math.BigInteger
 import java.util.function.Consumer
+import java.util.stream.Collectors
 
 private val log = Logger.getLogger(AWSClient::class.java)
 
@@ -81,8 +82,8 @@ class AWSClient internal constructor(
     fun readS3Object(bucketName: String, path: String): Pair<Long, ByteArray> {
         val obj = s3.getObject(bucketName, path)
         val lastModified = obj.objectMetadata.lastModified.time
-        val contents = obj.objectContent.readAllBytes()
-        return Pair(lastModified, contents)
+        val bytes = org.apache.commons.io.IOUtils.toByteArray(obj.objectContent)
+        return Pair(lastModified, bytes)
     }
 
     fun writeS3Object(bucket: String, key: String, info: JsonObject): Result {
@@ -102,8 +103,7 @@ class AWSClient internal constructor(
                     KeyVersion(
                         key
                     )
-                }
-                .toList()
+                }.collect(Collectors.toList())
             val request = DeleteObjectsRequest(bucket).withKeys(keys)
             s3.deleteObjects(request)
             succeed()
