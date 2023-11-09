@@ -42,6 +42,10 @@ fun <T : Number?> min(vararg vals: T): T {
     return min
 }
 
+fun modulus(n: Int, divisor: Int): Int {
+    return if (n < 0) n % divisor + divisor else n % divisor
+}
+
 fun modulus(n: Long, divisor: Long): Long {
     return if (n < 0) n % divisor + divisor else n % divisor
 }

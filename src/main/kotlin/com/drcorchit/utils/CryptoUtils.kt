@@ -17,10 +17,7 @@ const val RSA_MAX_MESSAGE_LENGTH = 245
 val CHARSET = StandardCharsets.UTF_8
 const val ASYMMETRIC_CIPHER_TYPE = "RSA"
 const val SYMMETRIC_CIPHER_TYPE = "AES/CBC/PKCS5Padding"
-//private val PRIVATE_KEY: PrivateKey? = null
-//private val PUBLIC_KEY: PublicKey? = null
 
-@Throws(NoSuchAlgorithmException::class)
 fun createSymmetricKey(): String {
     val generator = KeyGenerator.getInstance("AES")
     generator.init(256) // The AES key size in number of bits

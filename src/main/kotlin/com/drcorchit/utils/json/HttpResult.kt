@@ -55,7 +55,7 @@ fun forbidden(message: String): HttpResult {
     return failWithReason(message).toHttpResult(FORBIDDEN)
 }
 
-fun notFound(message: String, vararg args: Any): HttpResult {
+fun notFound(message: String): HttpResult {
     return failWithReason(message).toHttpResult(NOT_FOUND)
 }
 
