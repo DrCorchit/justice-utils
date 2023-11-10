@@ -59,9 +59,9 @@ fun loadFile(f: File): String {
     return output.toString()
 }
 
-fun loadFileFromAnywhere(path: String): Pair<Long, ByteArray> {
+fun loadFileFromAnywhere(path: String, client: AWSClient? = null): Pair<Long, ByteArray> {
     return try {
-        loadFileFromAnywhereBaseCase(path)
+        loadFileFromAnywhereBaseCase(path, client)
     } catch (e: Exception) {
         val message = String.format("Error while loading resource %s", path)
         log.error("loadFileFromAnywhere", message, e)
@@ -69,52 +69,28 @@ fun loadFileFromAnywhere(path: String): Pair<Long, ByteArray> {
     }
 }
 
-fun getLastModified(path: String): Long {
+fun getLastModified(path: String, client: AWSClient? = null): Long {
     val file = File(path)
     if (file.exists()) return file.lastModified()
-    val url = URL(path)
-    return when (url.host) {
-        "civplanet.net", "civpla.net" -> {
-            File("html" + url.path).lastModified()
-        }
-        "civplanet.s3.us-east-2.amazonaws.com" -> {
-            client!!.s3.getObjectMetadata("civplanet", url.path.substring(1)).lastModified.time
-        }
-        else -> {
-            if (isS3Url(path)) {
-                val pair: Pair<String, String> = parseS3Url(path)
-                client!!.s3.getObjectMetadata(pair.first, pair.second).lastModified.time
-            } else {
-                0
-            }
-        }
+    if (isS3Url(path) && client != null) {
+        val pair: Pair<String, String> = parseS3Url(path)
+        client.s3.getObjectMetadata(pair.first, pair.second).lastModified.time
     }
+    return 0
 }
 
-private fun loadFileFromAnywhereBaseCase(path: String): Pair<Long, ByteArray> {
-    val lastModified: Long
-    val contents: ByteArray
-    val file = File(path)
-    if (file.exists()) return readFile(path)
-    val url = URL(path)
-    return when (url.host) {
-        "civplanet.net", "civpla.net" -> {
-            readFile("html" + url.path)
+private fun loadFileFromAnywhereBaseCase(path: String, client: AWSClient?): Pair<Long, ByteArray> {
+    return if (File(path).exists()) readFile(path)
+    else if (isS3Url(path)) {
+        if (client == null) {
+            throw IllegalArgumentException("Cannot download an S3 url without an AWSClient")
         }
-        "civplanet.s3.us-east-2.amazonaws.com" -> {
-            //Omit the initial '/'
-            client!!.readS3Object("civplanet", url.path.substring(1))
-        }
-        else -> {
-            if (isS3Url(path)) {
-                val pair: Pair<String, String> = parseS3Url(path)
-                client!!.readS3Object(pair.first, pair.second)
-            } else {
-                contents = org.apache.commons.io.IOUtils.toByteArray(URL(path))
-                lastModified = System.currentTimeMillis()
-                Pair(lastModified, contents)
-            }
-        }
+        val pair: Pair<String, String> = parseS3Url(path)
+        client.readS3Object(pair.first, pair.second)
+    } else {
+        val contents = org.apache.commons.io.IOUtils.toByteArray(URL(path))
+        val lastModified = System.currentTimeMillis()
+        lastModified to contents
     }
 }
 

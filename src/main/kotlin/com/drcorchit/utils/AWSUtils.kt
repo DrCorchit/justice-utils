@@ -24,9 +24,9 @@ import java.util.stream.Collectors
 
 private val log = Logger.getLogger(AWSClient::class.java)
 
-class AWSClient internal constructor(
-    private val creds: AWSCredentials,
-    private val defaultBucketName: String
+class AWSClient constructor(
+    val creds: AWSCredentials,
+    val defaultBucketName: String
 ) {
     val s3: AmazonS3
     val database: DynamoDB
@@ -127,13 +127,6 @@ class AWSClient internal constructor(
         val output = database.getTable(tableName).getItem(PrimaryKey("userID", id))
         return dynamoDBItemToJson(output)
     }
-}
-
-var client: AWSClient? = null
-
-fun configure(creds: AWSCredentials, defaultBucketName: String) {
-    check(client == null) { "The AWS Client is already configured!" }
-    client = AWSClient(creds, defaultBucketName)
 }
 
 fun parseS3Url(url: String): Pair<String, String> {
