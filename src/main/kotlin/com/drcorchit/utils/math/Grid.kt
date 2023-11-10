@@ -1,19 +1,19 @@
 package com.drcorchit.utils.math
 
-class Grid<T>(clazz: Class<T>, val space: Space) {
-    private val grid: Array<Array<T>>
-
-    init {
-        //height and width are intentionally reversed here.
-        //this makes setRow possible with System.arraycopy()
-        grid = java.lang.reflect.Array.newInstance(clazz, space.height, space.width) as Array<Array<T>>
-    }
+class Grid<T>(val space: Space): Iterable<T> {
+    //height and width are intentionally reversed here.
+    //this makes setRow possible with System.arraycopy()
+    private val grid: Array<Array<T>> =
+        java.lang.reflect.Array.newInstance(Any::class.java, space.height, space.width) as Array<Array<T>>
 
     val width: Int
         get() = grid.size
 
     val height: Int
         get() = grid[0].size
+
+    val size: Int
+        get() = width * height
 
     operator fun get(i: Int, j: Int): T {
         return grid[i][j]
@@ -52,5 +52,30 @@ class Grid<T>(clazz: Class<T>, val space: Space) {
         if (column.size == grid.size) {
             for (i in column.indices) grid[i][columnIndex] = column[i]
         } else throw IllegalArgumentException("Number of arguments does not match column size.")
+    }
+
+    override fun iterator(): Iterator<T> {
+        return object: Iterator<T> {
+            var i = 0
+            var j = 0
+
+            fun advance() {
+                i++
+                if (i >= width) {
+                    i = 0
+                    j++
+                }
+            }
+
+            override fun hasNext(): Boolean {
+                return j < height
+            }
+
+            override fun next(): T {
+                val out = this@Grid[i, j]
+                advance()
+                return out
+            }
+        }
     }
 }
