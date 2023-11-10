@@ -3,7 +3,6 @@ package com.drcorchit.utils.json
 import com.drcorchit.utils.createCache
 import com.drcorchit.utils.stream
 import com.drcorchit.utils.loadFileFromAnywhere
-import com.drcorchit.utils.whitelist
 import com.google.common.cache.LoadingCache
 import com.google.common.collect.ImmutableSet
 import com.google.gson.*
@@ -110,40 +109,36 @@ fun JsonElement.prettyPrint(): String {
     return GSON.toJson(this)
 }
 
-operator fun <T> JsonObject.get(
-    key: String,
-    def: Supplier<out T>,
-    rule: Function<in JsonElement, out T>
-): T {
-    return if (this.has(key)) rule.apply(this[key]) else def.get()
+fun <T> JsonObject.getOrDefault(key: String, def: () -> T, rule: (JsonElement) -> T): T {
+    return if (this.has(key)) rule.invoke(this[key]) else def.invoke()
 }
 
 fun JsonObject.getBool(key: String, def: Boolean): Boolean {
-    return this[key, { def }, { it.asBoolean }]
+    return this.getOrDefault(key, { def }, { it.asBoolean })
 }
 
 fun JsonObject.getInt(key: String, def: Number): Int {
-    return this[key, { def.toInt() }, {it.asInt }]
+    return this.getOrDefault(key, { def.toInt() }, {it.asInt })
 }
 
 fun JsonObject.getLong(key: String, def: Number): Long {
-    return this[key, { def.toLong() }, { it.asLong }]
+    return this.getOrDefault(key, { def.toLong() }, { it.asLong })
 }
 
 fun JsonObject.getDouble(key: String, def: Number): Double {
-    return this[key, { def.toDouble() }, { it.asDouble }]
+    return this.getOrDefault(key, { def.toDouble() }, { it.asDouble })
 }
 
 fun JsonObject.getString(key: String, def: String): String {
-    return this[key, { def }, { it.asString }]
+    return this.getOrDefault(key, { def }, { it.asString })
 }
 
 fun JsonObject.getArray(key: String): JsonArray {
-    return this[key, { JsonArray() }, { it.asJsonArray }]
+    return this.getOrDefault(key, { JsonArray() }, { it.asJsonArray })
 }
 
 fun JsonObject.getObject(key: String): JsonObject {
-    return this[key, { JsonObject() }, { it.asJsonObject }]
+    return this.getOrDefault(key, { JsonObject() }, { it.asJsonObject })
 }
 
 fun JsonArray.stream(input: JsonArray): Stream<JsonElement> {

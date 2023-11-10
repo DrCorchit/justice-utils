@@ -1,5 +1,6 @@
 package com.drcorchit.utils.math
 
+import com.drcorchit.utils.createCache
 import com.drcorchit.utils.math.Compass.Companion.fromComponents
 import com.drcorchit.utils.modulus
 import com.google.gson.JsonObject
@@ -17,8 +18,10 @@ class Space(
 ) {
     val size = width * height
 
+    private val cache = createCache(20000) { coords: Pair<Int, Int> -> Coordinate(coords.first, coords.second) }
+
     fun coordinate(x: Int, y: Int): Coordinate {
-        return Coordinate(x, y)
+        return cache[x to y]
     }
 
     fun coordinates(vararg coordinates: Pair<Int, Int>): List<Coordinate> {
