@@ -90,12 +90,6 @@ private val TO_OBJECT = object : Collector<Pair<String, JsonElement>, JsonObject
     }
 }
 
-fun Iterable<JsonElement>.toJsonArray(): JsonArray {
-    val output = JsonArray()
-    this.forEach { output.add(it) }
-    return output
-}
-
 fun parseFromUrl(url: String): JsonElement {
     return JSON_CACHE.getUnchecked(url)
 }
@@ -112,12 +106,8 @@ fun clearCache(key: String) {
     JSON_CACHE.invalidate(key)
 }
 
-fun prettyPrintJson(input: JsonElement): String {
-    return GSON.toJson(input)
-}
-
-fun getBoolean(input: JsonObject, key: String, def: Boolean): Boolean {
-    return if (input.has(key)) input[key].asBoolean else def
+fun JsonElement.prettyPrint(): String {
+    return GSON.toJson(this)
 }
 
 operator fun <T> JsonObject.get(
@@ -128,16 +118,20 @@ operator fun <T> JsonObject.get(
     return if (this.has(key)) rule.apply(this[key]) else def.get()
 }
 
+fun JsonObject.getBool(key: String, def: Boolean): Boolean {
+    return this[key, { def }, { it.asBoolean }]
+}
+
 fun JsonObject.getInt(key: String, def: Number): Int {
-    return this[key, { def.toInt() }, { obj: JsonElement -> obj.asInt }]
+    return this[key, { def.toInt() }, {it.asInt }]
 }
 
 fun JsonObject.getLong(key: String, def: Number): Long {
-    return this[key, { def.toLong() }, { obj: JsonElement -> obj.asLong }]
+    return this[key, { def.toLong() }, { it.asLong }]
 }
 
 fun JsonObject.getDouble(key: String, def: Number): Double {
-    return this[key, { def.toDouble() }, { obj: JsonElement -> obj.asDouble }]
+    return this[key, { def.toDouble() }, { it.asDouble }]
 }
 
 fun JsonObject.getString(key: String, def: String): String {
@@ -152,11 +146,12 @@ fun JsonObject.getObject(key: String): JsonObject {
     return this[key, { JsonObject() }, { it.asJsonObject }]
 }
 
-//Throws a null pointer exception if the key is missing
-fun getWhitelistedString(input: JsonObject, key: String): String {
-    return input[key].asString.whitelist()
-}
-
 fun JsonArray.stream(input: JsonArray): Stream<JsonElement> {
     return stream(input, input.size().toLong())
+}
+
+fun Iterable<JsonElement>.toJsonArray(): JsonArray {
+    val output = JsonArray()
+    this.forEach { output.add(it) }
+    return output
 }

@@ -1,6 +1,5 @@
 package com.drcorchit.utils
 
-import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import java.io.File
@@ -40,11 +39,8 @@ class CryptoUtilsTest {
     companion object {
         val keypairFile = File("src/test/kotlin/com/drcorchit/utils/test.pem")
 
-        @AfterAll
-        @JvmStatic
-        fun cleanup() {
-            keypairFile.delete()
-            println("DELETING PRIVATE KEY")
+        init {
+            keypairFile.deleteOnExit()
         }
     }
 }

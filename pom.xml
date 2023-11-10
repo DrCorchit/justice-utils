@@ -5,8 +5,8 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>justice-utils</artifactId>
-    <groupId>com.drcorchit.justice</groupId>
-    <version>1.1.1</version>
+    <groupId>com.drcorchit</groupId>
+    <version>1.1.2</version>
     <packaging>jar</packaging>
 
     <name>justice-utils</name>
