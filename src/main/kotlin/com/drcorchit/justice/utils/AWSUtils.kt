@@ -24,6 +24,7 @@ private val log = Logger.getLogger(AWSClient::class.java)
 
 class AWSClient constructor(
     val creds: AWSCredentials,
+    val regions: Regions,
     val defaultBucketName: String
 ) {
     val s3: AmazonS3
@@ -31,7 +32,7 @@ class AWSClient constructor(
 
     init {
         val provider: AWSCredentialsProvider = AWSStaticCredentialsProvider(creds)
-        s3 = AmazonS3ClientBuilder.standard().withCredentials(provider).withRegion(Regions.US_EAST_2).build()
+        s3 = AmazonS3ClientBuilder.standard().withCredentials(provider).withRegion(regions).build()
 
         val bucketExists: Boolean = try {
             s3.doesBucketExistV2(defaultBucketName)
@@ -46,7 +47,7 @@ class AWSClient constructor(
 
         val db = AmazonDynamoDBClientBuilder.standard()
             .withCredentials(provider)
-            .withRegion(Regions.US_EAST_2).build()
+            .withRegion(regions).build()
         database = DynamoDB(db)
     }
 

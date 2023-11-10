@@ -18,9 +18,17 @@ fun HttpResult.getHttpCode(): Int {
     return this.second
 }
 
-fun HttpResult.getSuccess(): Boolean {
-    return this.getHttpCode() < HttpServletResponse.SC_BAD_REQUEST
+fun HttpResult.and(other: HttpResult): HttpResult {
+    return if (success) {
+        if (other.success) {
+            //Return whichever result has more useful info
+            if (getResult() is JsonResult) this else other
+        } else other
+    } else this
 }
+
+val HttpResult.success: Boolean
+    get() = getResult().success
 
 fun HttpResult.asException(): HttpResponseException {
     when (val res = this.getResult()) {

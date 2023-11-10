@@ -147,14 +147,14 @@ class Heap<E : Any>(type: Int) {
         }
     }
 
-    private fun heapifyUp(pos: Int) {
-        var pos = pos
-        var parentPos = parent(pos)
-        while (parentPos != -1) {
-            if (hasHigherPriority(pos, parentPos)) {
-                swap(parentPos, pos)
-                pos = parentPos
-                parentPos = parent(pos)
+    private fun heapifyUp(initialIndex: Int) {
+        var currentIndex = initialIndex
+        var parentIndex = parent(currentIndex)
+        while (parentIndex != -1) {
+            if (hasHigherPriority(currentIndex, parentIndex)) {
+                swap(parentIndex, currentIndex)
+                currentIndex = parentIndex
+                parentIndex = parent(currentIndex)
             } else {
                 return
             }
