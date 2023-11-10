@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import java.util.*
 
-class CoordinateTest {
+class SpaceTest {
     @Test
     fun metaTest() {
         val space = Space(100, 100, false, false, Layout.HEXAGONAL)
