@@ -10,7 +10,7 @@ import kotlin.math.pow
 
 private val log = Logger.getLogger(Strings::class.java)
 
-private class Strings {
+class Strings {
     companion object {
         //singleton instance is used only for logging
         const val KILOBYTE = 1024
