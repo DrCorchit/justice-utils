@@ -14,7 +14,7 @@ import com.amazonaws.services.s3.model.*
 import com.amazonaws.services.s3.model.DeleteObjectsRequest.KeyVersion
 import com.drcorchit.utils.json.Result
 import com.drcorchit.utils.json.failWithError
-import com.drcorchit.utils.json.prettyPrintJson
+import com.drcorchit.utils.json.prettyPrint
 import com.drcorchit.utils.json.succeed
 import com.google.gson.*
 import java.math.BigDecimal
@@ -88,7 +88,7 @@ class AWSClient internal constructor(
 
     fun writeS3Object(bucket: String, key: String, info: JsonObject): Result {
         return try {
-            s3.putObject(bucket, key, prettyPrintJson(info))
+            s3.putObject(bucket, key, info.prettyPrint())
             succeed()
         } catch (e: java.lang.Exception) {
             failWithError(e)
