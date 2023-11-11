@@ -98,11 +98,8 @@ class AWSClient constructor(
         return try {
             val keys = listObjects(bucket, prefix).stream()
                 .map { obj: S3ObjectSummary -> obj.key }
-                .map { key: String? ->
-                    KeyVersion(
-                        key
-                    )
-                }.collect(Collectors.toList())
+                .map { KeyVersion(it) }
+                .collect(Collectors.toList())
             val request = DeleteObjectsRequest(bucket).withKeys(keys)
             s3.deleteObjects(request)
             Result.succeed()
@@ -111,19 +108,16 @@ class AWSClient constructor(
         }
     }
 
-    fun putItem(tableName: String, primaryKey: String, properties: JsonObject) {
-        val item = Item().withPrimaryKey(PrimaryKey("userID", primaryKey))
+    fun putItem(tableName: String, primaryKey: String, primaryValue: String, properties: JsonObject) {
+        val item = Item().withPrimaryKey(PrimaryKey(primaryKey, primaryValue))
         properties.entrySet().forEach(Consumer { (key, value): Map.Entry<String?, JsonElement> ->
-            item.withJSON(
-                key,
-                value.toString()
-            )
+            item.withJSON(key, value.toString())
         })
         database.getTable(tableName).putItem(item)
     }
 
-    fun loadItem(tableName: String?, id: String?): JsonObject {
-        val output = database.getTable(tableName).getItem(PrimaryKey("userID", id))
+    fun getItem(tableName: String, primaryKey: String, primaryValue: String): JsonObject {
+        val output = database.getTable(tableName).getItem(PrimaryKey(primaryKey, primaryValue))
         return AWS.dynamoDBItemToJson(output)
     }
 }
