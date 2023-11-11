@@ -61,9 +61,9 @@ class Gacha<T> {
 
     fun filter(filter: Predicate<T>): Gacha<T> {
         val output = Gacha<T>()
-        weights.forEach { (key: T, `val`: Double?) ->
+        weights.forEach { (key: T, value: Double) ->
             if (filter.test(key)) {
-                output[key] = `val`
+                output[key] = value
             }
         }
         return output

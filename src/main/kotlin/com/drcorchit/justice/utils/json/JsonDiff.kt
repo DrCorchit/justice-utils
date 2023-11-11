@@ -97,7 +97,7 @@ abstract class JsonDiff<T : JsonElement>(private val type: KClass<T>) {
             }
             if (!add.isEmpty()) {
                 val addInfo = JsonObject()
-                add.forEach { (key: Int, value: JsonElement?) -> addInfo.add(key.toString(), value) }
+                add.forEach { (key: Int, value: JsonElement) -> addInfo.add(key.toString(), value) }
                 output.add("add", addInfo)
             }
             if (!change.isEmpty()) {
@@ -147,7 +147,7 @@ abstract class JsonDiff<T : JsonElement>(private val type: KClass<T>) {
 
         override fun apply(input: JsonObject, stack: Stack<String>): JsonObject {
             val output = input.deepCopy()
-            remove.forEach(Consumer { property: String? -> output.remove(property) })
+            remove.forEach(Consumer { property: String -> output.remove(property) })
             change.forEach { (key: String, diff: JsonDiff<*>) ->
                 stack.push(key)
                 if (!input.has(key)) {
@@ -176,7 +176,7 @@ abstract class JsonDiff<T : JsonElement>(private val type: KClass<T>) {
             }
             if (!change.isEmpty()) {
                 val changeInfo = JsonObject()
-                change.forEach { (key: String?, value: JsonDiff<*>) ->
+                change.forEach { (key: String, value: JsonDiff<*>) ->
                     changeInfo.add(key, value.serialize())
                 }
                 output.add("change", changeInfo)

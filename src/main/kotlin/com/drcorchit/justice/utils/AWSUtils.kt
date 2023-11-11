@@ -14,9 +14,12 @@ import com.amazonaws.services.s3.model.*
 import com.amazonaws.services.s3.model.DeleteObjectsRequest.KeyVersion
 import com.drcorchit.justice.utils.json.Result
 import com.drcorchit.justice.utils.json.prettyPrint
-import com.google.gson.*
-import java.math.BigDecimal
-import java.math.BigInteger
+import com.drcorchit.justice.utils.json.toJsonArray
+import com.drcorchit.justice.utils.json.toJsonObject
+import com.google.gson.JsonElement
+import com.google.gson.JsonNull
+import com.google.gson.JsonObject
+import com.google.gson.JsonPrimitive
 import java.util.function.Consumer
 import java.util.stream.Collectors
 
@@ -74,7 +77,7 @@ class AWSClient constructor(
         }
     }
 
-    fun getObjectMetadata(bucketName: String, path: String): ObjectMetadata? {
+    fun getObjectMetadata(bucketName: String, path: String): ObjectMetadata {
         return s3.getObjectMetadata(bucketName, path)
     }
 
@@ -110,7 +113,7 @@ class AWSClient constructor(
 
     fun putItem(tableName: String, primaryKey: String, primaryValue: String, properties: JsonObject) {
         val item = Item().withPrimaryKey(PrimaryKey(primaryKey, primaryValue))
-        properties.entrySet().forEach(Consumer { (key, value): Map.Entry<String?, JsonElement> ->
+        properties.entrySet().forEach(Consumer { (key, value): Map.Entry<String, JsonElement> ->
             item.withJSON(key, value.toString())
         })
         database.getTable(tableName).putItem(item)
@@ -146,21 +149,16 @@ class AWS {
 
         private fun objectToJson(input: Any?): JsonElement {
             if (input == null) return JsonNull.INSTANCE
-            when (input) {
+            return when (input) {
                 is Map<*, *> -> {
-                    val output = JsonObject()
-                    input.forEach { (key, value) -> output.add(key as String, objectToJson(value!!)) }
+                    input.mapKeys { it.key as String }.mapValues { objectToJson(it.value) }.toJsonObject()
                 }
-                is List<*> -> {
-                    val output = JsonArray()
-                    input.forEach { output.add(objectToJson(it)) }
-                }
+                is List<*> -> input.map { objectToJson(it) }.toJsonArray()
                 is String -> JsonPrimitive(input)
-                is BigInteger -> JsonPrimitive(input)
-                is BigDecimal -> JsonPrimitive(input)
+                is Number -> JsonPrimitive(input)
                 is Boolean -> JsonPrimitive(input)
+                else -> throw IllegalArgumentException("Unknown JSON component: ${input.javaClass}")
             }
-            throw IllegalArgumentException("Unknown JSON component: ${input.javaClass}")
         }
     }
 }

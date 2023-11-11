@@ -71,7 +71,7 @@ class Strings {
 
         @JvmStatic
         fun toString(n: Number, precision: Int): String {
-            val triples = ArrayList<String?>()
+            val triples = ArrayList<String>()
             var whole = n.toLong()
             val fraction = ((n.toDouble() - whole) * 10.0.pow(precision.toDouble())).toLong()
             do {

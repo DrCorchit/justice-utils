@@ -10,17 +10,16 @@ import kotlin.collections.HashSet
 
 
 private class DoubleIterable<S, T>(
-    private val source: Iterable<S?>,
-    private val converter: java.util.function.Function<in S?, Iterable<T>>
+    private val source: Iterable<S>,
+    private val converter: (S) -> Iterable<T>
 ) : Iterable<T> {
     override fun iterator(): Iterator<T> {
         return object : Iterator<T> {
-            var outer: Iterator<S?>? = null
+            val outer: Iterator<S> = source.iterator()
             var inner: Iterator<T>? = null
             var next: T? = null
 
             init {
-                outer = source.iterator()
                 next = seekNext()
             }
 
@@ -35,22 +34,15 @@ private class DoubleIterable<S, T>(
             }
 
             private fun innerHasNext(): Boolean {
-                return inner != null && inner!!.hasNext()
+                return inner?.hasNext() ?: false
             }
 
             private fun seekNext(): T? {
-                return if (innerHasNext()) {
-                    val temp: T? = inner!!.next()
-                    temp ?: seekNext()
-                } else {
-                    while (!innerHasNext() && outer!!.hasNext()) inner = converter.apply(outer!!.next()).iterator()
-                    if (innerHasNext()) {
-                        val temp: T? = inner!!.next()
-                        temp ?: seekNext()
-                    } else {
-                        null
-                    }
+                while (!innerHasNext() && outer.hasNext()) {
+                    //Inner can't be null here, but it could be empty
+                    inner = converter.invoke(outer.next()).iterator()
                 }
+                return if (innerHasNext()) inner!!.next() else null
             }
         }
     }
@@ -97,10 +89,10 @@ fun <S, T> Iterator<S>.convert(converter: (S) -> T): Iterator<T> {
 }
 
 fun <S, T> doubleIterator(
-    source: Iterable<S?>,
-    rule: java.util.function.Function<in S?, Iterable<T>>
-): Iterable<T?> {
-    return DoubleIterable<S?, T>(source, rule)
+    source: Iterable<S>,
+    rule: (S) -> Iterable<T>
+): Iterable<T> {
+    return DoubleIterable(source, rule)
 }
 
 //used for debugging caches

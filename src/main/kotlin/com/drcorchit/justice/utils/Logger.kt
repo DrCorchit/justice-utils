@@ -29,7 +29,7 @@ class Logger private constructor(clazz: Class<*>) {
         log(LogInfo(ERROR, method, message, null))
     }
 
-    fun error(method: String, message: String, error: Throwable?) {
+    fun error(method: String, message: String, error: Throwable) {
         log(LogInfo(ERROR, method, message, error))
     }
 
@@ -37,7 +37,7 @@ class Logger private constructor(clazz: Class<*>) {
         log(LogInfo(FATAL, method, message, null))
     }
 
-    fun fatal(method: String, message: String, error: Throwable?) {
+    fun fatal(method: String, message: String, error: Throwable) {
         log(LogInfo(FATAL, method, message, error))
     }
 
@@ -49,7 +49,7 @@ class Logger private constructor(clazz: Class<*>) {
         }
     }
 
-    inner class LogInfo constructor(level: Level, method: String, message: String, error: Throwable?) {
+    inner class LogInfo(level: Level, method: String, message: String, error: Throwable?) {
         val level: Level
         val method: String
         val message: String

@@ -1,17 +1,20 @@
 package com.drcorchit.justice.utils.math
 
+import java.util.function.Consumer
+
 class Grid<T>(val space: Space) : Iterable<T> {
     //height and width are intentionally reversed here.
     //this makes setRow possible with System.arraycopy()
     private val grid: Array<Array<T>> =
         java.lang.reflect.Array.newInstance(Any::class.java, space.height, space.width) as Array<Array<T>>
 
-    constructor(width: Int, height: Int): this(
-        Space(width, height,
-        wrapHoriz = false,
-        wrapVert = false,
-        layout = Layout.CARTESIAN
-    )
+    constructor(width: Int, height: Int) : this(
+        Space(
+            width, height,
+            wrapHoriz = false,
+            wrapVert = false,
+            layout = Layout.CARTESIAN
+        )
     )
 
     val width: Int
@@ -39,12 +42,11 @@ class Grid<T>(val space: Space) : Iterable<T> {
         grid[c.y][c.x] = value
     }
 
-    fun forEach(action: (Space.Coordinate, T?) -> Unit) {
-        for (j in 0 until height) {
-            for (i in 0 until width) {
-                val c = space.coordinate(i, j)
-                action.invoke(c, get(c))
-            }
+    fun forEach(action: (Space.Coordinate, T) -> Unit) {
+        val iter = GridIterator()
+        while (iter.hasNext()) {
+            val next = iter.nextIndexed()
+            action.invoke(next.first, next.second)
         }
     }
 
@@ -63,43 +65,45 @@ class Grid<T>(val space: Space) : Iterable<T> {
     }
 
     override fun iterator(): Iterator<T> {
-        return object : Iterator<T> {
-            var i = 0
-            var j = 0
-            var next: T? = null
+        return GridIterator()
+    }
 
-            init {
-                seekNext()
-            }
+    inner class GridIterator : Iterator<T> {
+        var i = 0
+        var j = 0
+        var next: T? = get(i, j)
 
-            fun advance() {
-                i++
-                if (i >= width) {
-                    i = 0
-                    j++
-                }
-            }
+        init {
+            if (next == null) seekNext()
+        }
 
-            fun seekNext() {
-                do {
-                    next = get(i, j)
-                    advance()
-                } while(next == null && space.within(i, j))
+        private fun advance() {
+            i++
+            if (i >= width) {
+                i = 0
+                j++
             }
+        }
 
-            override fun hasNext(): Boolean {
-                return next != null
-            }
+        private fun seekNext() {
+            do {
+                advance()
+            } while (space.within(i, j) && get(i, j) == null)
+            next = if (space.within(i, j)) get(i, j) else null
+        }
 
-            override fun next(): T {
-                val out = next
-                if (out == null) {
-                    throw IllegalStateException("No next element in grid!")
-                } else {
-                    seekNext()
-                    return out
-                }
-            }
+        override fun hasNext(): Boolean {
+            return next != null
+        }
+
+        override fun next(): T {
+            val out = next!!
+            seekNext()
+            return out
+        }
+
+        fun nextIndexed(): Pair<Space.Coordinate, T> {
+            return space.coordinate(i, j) to next()
         }
     }
 }

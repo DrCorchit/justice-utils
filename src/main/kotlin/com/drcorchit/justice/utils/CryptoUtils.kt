@@ -75,10 +75,10 @@ fun decrypt(password: String, iv: String, ciphertext: String): String {
     return String(plaintext, CHARSET)
 }
 
-fun toBase64(data: ByteArray?): String {
+fun toBase64(data: ByteArray): String {
     return Base64.getEncoder().encodeToString(data)
 }
 
-fun fromBase64(data: String?): ByteArray {
+fun fromBase64(data: String): ByteArray {
     return Base64.getDecoder().decode(data)
 }

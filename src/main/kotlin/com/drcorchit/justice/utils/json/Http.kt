@@ -1,6 +1,7 @@
 package com.drcorchit.justice.utils.json
 
 import com.drcorchit.justice.utils.exceptions.HttpResponseException
+import com.google.gson.JsonObject
 import jakarta.servlet.http.HttpServletResponse
 
 typealias HttpResult = Pair<Result, Int>
@@ -25,6 +26,12 @@ fun HttpResult.and(other: HttpResult): HttpResult {
             if (getResult() is JsonResult) this else other
         } else other
     } else this
+}
+
+fun HttpResult.serialize(): JsonObject {
+    val output = getResult().serialize()
+    output.addProperty("httpCode", getHttpCode())
+    return output
 }
 
 val HttpResult.success: Boolean
@@ -94,6 +101,11 @@ class Http {
         @JvmStatic
         fun ok(): HttpResult {
             return SUCCESS
+        }
+
+        @JvmStatic
+        fun ok(info: JsonObject): HttpResult {
+            return Result.succeedWithInfo(info).toHttpResult()
         }
     }
 }

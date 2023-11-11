@@ -32,23 +32,23 @@ class MathUtils {
         }
 
         @JvmStatic
-        fun <T : Number?> clamp(min: T, value: T, max: T): T {
-            return if (value!!.toDouble() > max!!.toDouble()) max else if (value.toDouble() < min!!.toDouble()) min else value
+        fun <T : Number> clamp(min: T, value: T, max: T): T {
+            return if (value.toDouble() > max.toDouble()) max else if (value.toDouble() < min.toDouble()) min else value
         }
 
         @SafeVarargs
         @JvmStatic
-        fun <T : Number?> max(vararg values: T): T {
+        fun <T : Number> max(vararg values: T): T {
             var max = values[0]
-            for (value in values) if (value!!.toDouble() > max!!.toDouble()) max = value
+            for (value in values) if (value.toDouble() > max.toDouble()) max = value
             return max
         }
 
         @SafeVarargs
         @JvmStatic
-        fun <T : Number?> min(vararg values: T): T {
+        fun <T : Number> min(vararg values: T): T {
             var min = values[0]
-            for (value in values) if (value!!.toDouble() < min!!.toDouble()) min = value
+            for (value in values) if (value.toDouble() < min.toDouble()) min = value
             return min
         }
 

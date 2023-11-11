@@ -60,7 +60,7 @@ class RSA(f: File) {
         return toBase64(sign(hash, privateKey))
     }
 
-    fun verify(data: String, signedHash: String?): Boolean {
+    fun verify(data: String, signedHash: String): Boolean {
         return try {
             val hash = getHash(data.toByteArray(CHARSET), RSA_MAX_MESSAGE_LENGTH)
             val decryptedHash = verify(fromBase64(signedHash), publicKey)
@@ -78,11 +78,9 @@ class RSA(f: File) {
     fun encrypt(plaintext: ByteArray): Message {
         val rawKey = createSymmetricKey()
         val (first, second) = encrypt(plaintext, rawKey)
-        val ciphertext: ByteArray?
-        val iv: ByteArray?
         val key: ByteArray
-        iv = first
-        ciphertext = second
+        val iv: ByteArray = first
+        val ciphertext: ByteArray = second
         val encryptCipher = Cipher.getInstance(ASYMMETRIC_CIPHER_TYPE)
         encryptCipher.init(Cipher.ENCRYPT_MODE, publicKey)
         key = encryptCipher.doFinal(rawKey.toByteArray(CHARSET))

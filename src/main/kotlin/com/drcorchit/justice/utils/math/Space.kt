@@ -19,6 +19,11 @@ class Space(
 
     private val cache = createCache(20000) { coords: Pair<Int, Int> -> Coordinate(coords.first, coords.second) }
 
+    init {
+        check(width > 0)
+        check(height > 0)
+    }
+
     fun coordinate(x: Int, y: Int): Coordinate {
         return cache[x to y]
     }

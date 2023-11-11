@@ -82,22 +82,14 @@ private val TO_OBJECT = object : Collector<Pair<String, JsonElement>, JsonObject
     }
 
     override fun accumulator(): BiConsumer<JsonObject, Pair<String, JsonElement>> {
-        return BiConsumer<JsonObject, Pair<String, JsonElement>> { obj: JsonObject, pair: Pair<String?, JsonElement?> ->
-            obj.add(
-                pair.first,
-                pair.second
-            )
+        return BiConsumer<JsonObject, Pair<String, JsonElement>> { obj: JsonObject, pair: Pair<String, JsonElement> ->
+            obj.add(pair.first, pair.second)
         }
     }
 
     override fun combiner(): BinaryOperator<JsonObject> {
         return BinaryOperator<JsonObject> { obj1: JsonObject, obj2: JsonObject ->
-            obj2.entrySet().forEach(
-                Consumer<Map.Entry<String?, JsonElement?>> { (key, value): Map.Entry<String?, JsonElement?> ->
-                    obj1.add(
-                        key, value
-                    )
-                })
+            obj2.entrySet().forEach { obj1.add(it.key, it.value) }
             obj1
         }
     }
@@ -124,7 +116,7 @@ fun JsonObject.getBool(key: String, def: Boolean): Boolean {
 }
 
 fun JsonObject.getInt(key: String, def: Number): Int {
-    return this.getOrDefault(key, { def.toInt() }, {it.asInt })
+    return this.getOrDefault(key, { def.toInt() }, { it.asInt })
 }
 
 fun JsonObject.getLong(key: String, def: Number): Long {
@@ -149,6 +141,12 @@ fun JsonObject.getObject(key: String): JsonObject {
 
 fun JsonArray.stream(): Stream<JsonElement> {
     return stream(this, this.size().toLong())
+}
+
+fun Map<String, JsonElement>.toJsonObject(): JsonObject {
+    val output = JsonObject()
+    this.entries.forEach { output.add(it.key, it.value) }
+    return output
 }
 
 fun Iterable<JsonElement>.toJsonArray(): JsonArray {
