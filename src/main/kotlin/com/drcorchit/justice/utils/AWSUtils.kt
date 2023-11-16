@@ -12,10 +12,7 @@ import com.amazonaws.services.s3.AmazonS3
 import com.amazonaws.services.s3.AmazonS3ClientBuilder
 import com.amazonaws.services.s3.model.*
 import com.amazonaws.services.s3.model.DeleteObjectsRequest.KeyVersion
-import com.drcorchit.justice.utils.json.Result
-import com.drcorchit.justice.utils.json.prettyPrint
-import com.drcorchit.justice.utils.json.toJsonArray
-import com.drcorchit.justice.utils.json.toJsonObject
+import com.drcorchit.justice.utils.json.*
 import com.google.gson.JsonElement
 import com.google.gson.JsonNull
 import com.google.gson.JsonObject
@@ -81,11 +78,11 @@ class AWSClient constructor(
         return s3.getObjectMetadata(bucketName, path)
     }
 
-    fun readS3Object(bucketName: String, path: String): Pair<Long, ByteArray> {
+    fun readS3Object(bucketName: String, path: String): TimestampedBytes {
         val obj = s3.getObject(bucketName, path)
         val lastModified = obj.objectMetadata.lastModified.time
         val bytes = org.apache.commons.io.IOUtils.toByteArray(obj.objectContent)
-        return Pair(lastModified, bytes)
+        return bytes to lastModified
     }
 
     fun writeS3Object(bucket: String, key: String, info: JsonObject): Result {
@@ -153,6 +150,7 @@ class AWS {
                 is Map<*, *> -> {
                     input.mapKeys { it.key as String }.mapValues { objectToJson(it.value) }.toJsonObject()
                 }
+
                 is List<*> -> input.map { objectToJson(it) }.toJsonArray()
                 is String -> JsonPrimitive(input)
                 is Number -> JsonPrimitive(input)

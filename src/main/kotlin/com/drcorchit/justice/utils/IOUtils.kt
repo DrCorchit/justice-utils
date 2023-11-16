@@ -1,6 +1,7 @@
 package com.drcorchit.justice.utils
 
 import com.drcorchit.justice.utils.json.Result
+import com.drcorchit.justice.utils.json.TimestampedBytes
 import java.io.*
 import java.net.URL
 import java.nio.file.Files
@@ -61,7 +62,7 @@ class IOUtils {
         }
 
         @JvmStatic
-        fun loadFileFromAnywhere(path: String, client: AWSClient? = null): Pair<Long, ByteArray> {
+        fun loadFileFromAnywhere(path: String, client: AWSClient? = null): TimestampedBytes {
             return try {
                 loadFileFromAnywhereBaseCase(path, client)
             } catch (e: Exception) {
@@ -82,7 +83,7 @@ class IOUtils {
             return 0
         }
 
-        private fun loadFileFromAnywhereBaseCase(path: String, client: AWSClient?): Pair<Long, ByteArray> {
+        private fun loadFileFromAnywhereBaseCase(path: String, client: AWSClient?): TimestampedBytes {
             return if (File(path).exists()) readFile(path)
             else if (AWS.isS3Url(path)) {
                 if (client == null) {
@@ -93,17 +94,17 @@ class IOUtils {
             } else {
                 val contents = org.apache.commons.io.IOUtils.toByteArray(URL(path))
                 val lastModified = System.currentTimeMillis()
-                lastModified to contents
+                contents to lastModified
             }
         }
 
         @JvmStatic
-        fun readFile(path: String): Pair<Long, ByteArray> {
+        fun readFile(path: String): TimestampedBytes {
             val file = File(path)
             if (file.exists()) {
                 val contents = Files.readAllBytes(file.toPath())
                 val lastModified: Long = file.lastModified()
-                return Pair(lastModified, contents)
+                return contents to lastModified
             }
             throw FileNotFoundException(path)
         }

@@ -107,5 +107,11 @@ class Http {
         fun ok(info: JsonObject): HttpResult {
             return Result.succeedWithInfo(info).toHttpResult()
         }
+
+        @JvmStatic
+        fun requireParams(message: String, body: JsonObject, vararg params: String): Unit {
+            val missing = params.filter { !body.has(it) }
+            check(missing.isEmpty()) { String.format(message, missing) }
+        }
     }
 }

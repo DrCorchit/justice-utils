@@ -1,5 +1,6 @@
 package com.drcorchit.justice.utils.json
 
+import com.drcorchit.justice.utils.AWSClient
 import com.drcorchit.justice.utils.IOUtils
 import com.drcorchit.justice.utils.createCache
 import com.drcorchit.justice.utils.json.JsonUtils.Companion.GSON
@@ -17,16 +18,16 @@ class JsonUtils {
         @JvmStatic
         val GSON: Gson = GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create()
 
-        private val JSON_CACHE: LoadingCache<String, JsonElement> =
+        private val JSON_CACHE: LoadingCache<String, TimestampedJson> =
             createCache(1000) { path: String -> parseJsonFromAnywhere(path) }
 
         @JvmStatic
-        fun parseFromUrl(url: String): JsonElement {
+        fun parseFromUrl(url: String): TimestampedJson {
             return JSON_CACHE.getUnchecked(url)
         }
 
-        private fun parseJsonFromAnywhere(path: String): JsonElement {
-            return JsonParser.parseString(String(IOUtils.loadFileFromAnywhere(path).second))
+        private fun parseJsonFromAnywhere(path: String, client: AWSClient? = null): TimestampedJson {
+            return IOUtils.loadFileFromAnywhere(path, client).toJson()
         }
 
         @JvmStatic
