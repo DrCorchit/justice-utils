@@ -1,7 +1,8 @@
 package com.drcorchit.justice.utils.math
 
-import com.drcorchit.justice.utils.json.JsonUtils.Companion.GSON
+import com.drcorchit.justice.utils.json.JsonUtils.GSON
 import com.google.gson.JsonElement
+import com.google.gson.JsonObject
 import java.util.*
 
 class LatencyMonitor(val name: String) {
@@ -42,5 +43,9 @@ class LatencyMonitor(val name: String) {
         return GSON.toJsonTree(computeStatistics())
     }
 
-    data class MonitorResults(val size: Int, val mean: Long, val median: Long, val p95: Long, val p99: Long)
+    data class MonitorResults(val size: Int, val mean: Long, val median: Long, val p95: Long, val p99: Long) {
+        fun serialize(): JsonObject {
+            return GSON.toJsonTree(this).asJsonObject
+        }
+    }
 }

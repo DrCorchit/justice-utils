@@ -1,6 +1,6 @@
 package com.drcorchit.justice.utils.json
 
-import com.drcorchit.justice.utils.assertDisjoint
+import com.drcorchit.justice.utils.Utils.assertDisjoint
 import com.google.common.collect.ImmutableMap
 import com.google.common.collect.ImmutableSet
 import com.google.gson.*

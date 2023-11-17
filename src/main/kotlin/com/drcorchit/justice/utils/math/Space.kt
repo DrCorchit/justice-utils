@@ -1,6 +1,6 @@
 package com.drcorchit.justice.utils.math
 
-import com.drcorchit.justice.utils.createCache
+import com.drcorchit.justice.utils.Utils.createCache
 import com.drcorchit.justice.utils.math.Compass.Companion.fromComponents
 import com.google.gson.JsonObject
 import kotlin.math.abs

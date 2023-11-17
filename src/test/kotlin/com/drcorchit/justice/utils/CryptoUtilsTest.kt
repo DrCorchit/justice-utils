@@ -1,8 +1,8 @@
 package com.drcorchit.justice.utils
 
 import com.drcorchit.justice.utils.crypto.RSA
-import com.drcorchit.justice.utils.crypto.decrypt
-import com.drcorchit.justice.utils.crypto.encrypt
+import com.drcorchit.justice.utils.crypto.CryptoUtils.decrypt
+import com.drcorchit.justice.utils.crypto.CryptoUtils.encrypt
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import java.io.File

@@ -1,6 +1,13 @@
 package com.drcorchit.justice.utils.crypto
 
 import com.drcorchit.justice.utils.Logger
+import com.drcorchit.justice.utils.crypto.CryptoUtils.ASYMMETRIC_CIPHER_TYPE
+import com.drcorchit.justice.utils.crypto.CryptoUtils.CHARSET
+import com.drcorchit.justice.utils.crypto.CryptoUtils.RSA_MAX_MESSAGE_LENGTH
+import com.drcorchit.justice.utils.crypto.CryptoUtils.createSymmetricKey
+import com.drcorchit.justice.utils.crypto.CryptoUtils.fromBase64
+import com.drcorchit.justice.utils.crypto.CryptoUtils.getHash
+import com.drcorchit.justice.utils.crypto.CryptoUtils.toBase64
 import com.google.gson.JsonObject
 import org.bouncycastle.jce.provider.BouncyCastleProvider
 import org.bouncycastle.util.io.pem.PemObject
@@ -14,10 +21,6 @@ import java.security.interfaces.RSAPrivateCrtKey
 import java.security.spec.PKCS8EncodedKeySpec
 import java.security.spec.RSAPublicKeySpec
 import javax.crypto.Cipher
-
-private val log = Logger.getLogger(RSA::class.java)
-
-val factory = KeyFactory.getInstance(ASYMMETRIC_CIPHER_TYPE)
 
 class RSA(f: File) {
     val privateKey: PrivateKey
@@ -78,7 +81,7 @@ class RSA(f: File) {
 
     fun encrypt(plaintext: ByteArray): Message {
         val rawKey = createSymmetricKey()
-        val (first, second) = encrypt(plaintext, rawKey)
+        val (first, second) = CryptoUtils.encrypt(plaintext, rawKey)
         val key: ByteArray
         val iv: ByteArray = first
         val ciphertext: ByteArray = second
@@ -93,7 +96,7 @@ class RSA(f: File) {
             val decryptCipher = Cipher.getInstance(ASYMMETRIC_CIPHER_TYPE)
             decryptCipher.init(Cipher.DECRYPT_MODE, privateKey)
             val rawKey = String(decryptCipher.doFinal(key), CHARSET)
-            return decrypt(message, iv, rawKey)
+            return CryptoUtils.decrypt(message, iv, rawKey)
         }
 
         fun decrypt(): String {
@@ -127,5 +130,11 @@ class RSA(f: File) {
         val encryptCipher = Cipher.getInstance(ASYMMETRIC_CIPHER_TYPE)
         encryptCipher.init(Cipher.DECRYPT_MODE, key)
         return encryptCipher.doFinal(data)
+    }
+
+    companion object {
+        private val log = Logger.getLogger(RSA::class.java)
+
+        val factory = KeyFactory.getInstance(ASYMMETRIC_CIPHER_TYPE)
     }
 }

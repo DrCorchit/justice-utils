@@ -1,4 +1,4 @@
-package com.drcorchit.justice.utils
+package com.drcorchit.justice.utils.aws
 
 import com.amazonaws.auth.AWSCredentials
 import com.amazonaws.auth.AWSCredentialsProvider
@@ -11,18 +11,15 @@ import com.amazonaws.services.dynamodbv2.document.PrimaryKey
 import com.amazonaws.services.s3.AmazonS3
 import com.amazonaws.services.s3.AmazonS3ClientBuilder
 import com.amazonaws.services.s3.model.*
-import com.amazonaws.services.s3.model.DeleteObjectsRequest.KeyVersion
-import com.drcorchit.justice.utils.json.*
+import com.drcorchit.justice.utils.Logger
+import com.drcorchit.justice.utils.json.JsonUtils.prettyPrint
+import com.drcorchit.justice.utils.json.Result
+import com.drcorchit.justice.utils.json.TimestampedBytes
 import com.google.gson.JsonElement
-import com.google.gson.JsonNull
 import com.google.gson.JsonObject
-import com.google.gson.JsonPrimitive
-import java.util.function.Consumer
 import java.util.stream.Collectors
 
-private val log = Logger.getLogger(AWSClient::class.java)
-
-class AWSClient constructor(
+class AWSClient(
     val creds: AWSCredentials,
     val regions: Regions,
     val defaultBucketName: String
@@ -98,7 +95,7 @@ class AWSClient constructor(
         return try {
             val keys = listObjects(bucket, prefix).stream()
                 .map { obj: S3ObjectSummary -> obj.key }
-                .map { KeyVersion(it) }
+                .map { DeleteObjectsRequest.KeyVersion(it) }
                 .collect(Collectors.toList())
             val request = DeleteObjectsRequest(bucket).withKeys(keys)
             s3.deleteObjects(request)
@@ -110,53 +107,18 @@ class AWSClient constructor(
 
     fun putItem(tableName: String, primaryKey: String, primaryValue: String, properties: JsonObject) {
         val item = Item().withPrimaryKey(PrimaryKey(primaryKey, primaryValue))
-        properties.entrySet().forEach(Consumer { (key, value): Map.Entry<String, JsonElement> ->
+        properties.entrySet().forEach { (key, value): Map.Entry<String, JsonElement> ->
             item.withJSON(key, value.toString())
-        })
+        }
         database.getTable(tableName).putItem(item)
     }
 
     fun getItem(tableName: String, primaryKey: String, primaryValue: String): JsonObject {
         val output = database.getTable(tableName).getItem(PrimaryKey(primaryKey, primaryValue))
-        return AWS.dynamoDBItemToJson(output)
+        return AWSUtils.dynamoDBItemToJson(output)
     }
-}
 
-class AWS {
     companion object {
-        @JvmStatic
-        fun parseS3Url(url: String): Pair<String, String> {
-            if (url.startsWith("s3://")) {
-                val remain = url.substring(5)
-                val slashPos = remain.indexOf("/")
-                return Pair(remain.substring(0, slashPos), remain.substring(slashPos + 1))
-            }
-            throw IllegalArgumentException()
-        }
-
-        @JvmStatic
-        fun isS3Url(url: String): Boolean {
-            return url.matches("[sS]3://\\w+(/\\w+)+".toRegex())
-        }
-
-        @JvmStatic
-        fun dynamoDBItemToJson(item: Item): JsonObject {
-            return objectToJson(item.asMap()).asJsonObject
-        }
-
-        private fun objectToJson(input: Any?): JsonElement {
-            if (input == null) return JsonNull.INSTANCE
-            return when (input) {
-                is Map<*, *> -> {
-                    input.mapKeys { it.key as String }.mapValues { objectToJson(it.value) }.toJsonObject()
-                }
-
-                is List<*> -> input.map { objectToJson(it) }.toJsonArray()
-                is String -> JsonPrimitive(input)
-                is Number -> JsonPrimitive(input)
-                is Boolean -> JsonPrimitive(input)
-                else -> throw IllegalArgumentException("Unknown JSON component: ${input.javaClass}")
-            }
-        }
+        private val log = Logger.getLogger(AWSClient::class.java)
     }
 }
