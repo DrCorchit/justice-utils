@@ -1,5 +1,6 @@
-package com.drcorchit.justice.utils
+package com.drcorchit.justice.utils.crypto
 
+import com.drcorchit.justice.utils.Logger
 import com.google.gson.JsonObject
 import org.bouncycastle.jce.provider.BouncyCastleProvider
 import org.bouncycastle.util.io.pem.PemObject

@@ -8,9 +8,9 @@ import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.math.pow
 
-private val log = Logger.getLogger(Strings::class.java)
+private val log = Logger.getLogger(StringUtils::class.java)
 
-class Strings {
+class StringUtils {
     companion object {
         //singleton instance is used only for logging
         const val KILOBYTE = 1024

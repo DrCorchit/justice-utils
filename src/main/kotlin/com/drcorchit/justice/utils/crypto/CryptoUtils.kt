@@ -1,4 +1,4 @@
-package com.drcorchit.justice.utils
+package com.drcorchit.justice.utils.crypto
 
 import com.drcorchit.justice.utils.Logger.Companion.getLogger
 import com.drcorchit.justice.utils.math.MathUtils
