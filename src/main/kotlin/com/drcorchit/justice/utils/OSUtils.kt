@@ -1,5 +1,7 @@
 package com.drcorchit.justice.utils
 
+import com.drcorchit.justice.utils.logging.Logger
+
 //Copied from https://memorynotfound.com/detect-os-name-version-java/ with modifications
 object OSUtils {
     private val log = Logger.getLogger(OSUtils::class.java)

@@ -1,13 +1,14 @@
 package com.drcorchit.justice.utils.json
 
 import com.drcorchit.justice.utils.exceptions.HttpResponseException
+import com.drcorchit.justice.utils.json.Http.Companion.INTERNAL_ERROR
+import com.drcorchit.justice.utils.json.Http.Companion.OK
 import com.google.gson.JsonObject
-import jakarta.servlet.http.HttpServletResponse
 
 typealias HttpResult = Pair<Result, Int>
 
 fun Result.toHttpResult(): HttpResult {
-    val code = if (this.success) HttpServletResponse.SC_OK else HttpServletResponse.SC_INTERNAL_SERVER_ERROR
+    val code = if (this.success) OK else INTERNAL_ERROR
     return toHttpResult(code)
 }
 
@@ -47,27 +48,33 @@ fun HttpResult.asException(): HttpResponseException {
 
 class Http {
     companion object {
+        const val OK = 200
+        const val BAD_REQUEST = 400
+        const val UNAUTHORIZED = 401
+        const val FORBIDDEN = 403
+        const val NOT_FOUND = 404
+        const val INTERNAL_ERROR = 500
 
-        private val SUCCESS = Result.succeed() to HttpServletResponse.SC_OK
+        private val SUCCESS = Result.succeed() to OK
 
         @JvmStatic
         fun badRequest(message: String): HttpResult {
-            return Result.failWithReason(message).toHttpResult(HttpServletResponse.SC_BAD_REQUEST)
+            return Result.failWithReason(message).toHttpResult(BAD_REQUEST)
         }
 
         @JvmStatic
         fun unauthorized(message: String): HttpResult {
-            return Result.failWithReason(message).toHttpResult(HttpServletResponse.SC_UNAUTHORIZED)
+            return Result.failWithReason(message).toHttpResult(UNAUTHORIZED)
         }
 
         @JvmStatic
         fun forbidden(message: String): HttpResult {
-            return Result.failWithReason(message).toHttpResult(HttpServletResponse.SC_FORBIDDEN)
+            return Result.failWithReason(message).toHttpResult(FORBIDDEN)
         }
 
         @JvmStatic
         fun notFound(message: String): HttpResult {
-            return Result.failWithReason(message).toHttpResult(HttpServletResponse.SC_NOT_FOUND)
+            return Result.failWithReason(message).toHttpResult(NOT_FOUND)
         }
 
         @JvmStatic
@@ -78,24 +85,24 @@ class Http {
         @JvmStatic
         fun missingRequestParameter(parameter: String): HttpResult {
             val reason = String.format("Request is missing parameter: \"%s\"", parameter)
-            return Result.failWithReason(reason).toHttpResult(HttpServletResponse.SC_BAD_REQUEST)
+            return Result.failWithReason(reason).toHttpResult(BAD_REQUEST)
         }
 
         @JvmStatic
         fun missingRequestParameters(parameters: List<String>): HttpResult {
             val reason = String.format("Request is missing parameters: \"%s\"", parameters)
-            return Result.failWithReason(reason).toHttpResult(HttpServletResponse.SC_BAD_REQUEST)
+            return Result.failWithReason(reason).toHttpResult(BAD_REQUEST)
         }
 
         @JvmStatic
         fun missingPostBody(): HttpResult {
             val reason = "Request body is missing."
-            return Result.failWithReason(reason).toHttpResult(HttpServletResponse.SC_BAD_REQUEST)
+            return Result.failWithReason(reason).toHttpResult(BAD_REQUEST)
         }
 
         @JvmStatic
         fun internalError(e: Exception): HttpResult {
-            return Result.failWithError(e).toHttpResult(HttpServletResponse.SC_INTERNAL_SERVER_ERROR)
+            return Result.failWithError(e).toHttpResult(INTERNAL_ERROR)
         }
 
         @JvmStatic

@@ -4,6 +4,7 @@ import com.drcorchit.justice.utils.aws.AWSClient
 import com.drcorchit.justice.utils.aws.AWSUtils
 import com.drcorchit.justice.utils.json.Result
 import com.drcorchit.justice.utils.json.TimestampedBytes
+import com.drcorchit.justice.utils.logging.Logger
 import java.io.*
 import java.net.URL
 import java.nio.file.Files

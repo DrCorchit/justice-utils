@@ -1,6 +1,5 @@
 package com.drcorchit.justice.utils.crypto
 
-import com.drcorchit.justice.utils.Logger
 import com.drcorchit.justice.utils.crypto.CryptoUtils.ASYMMETRIC_CIPHER_TYPE
 import com.drcorchit.justice.utils.crypto.CryptoUtils.CHARSET
 import com.drcorchit.justice.utils.crypto.CryptoUtils.RSA_MAX_MESSAGE_LENGTH
@@ -8,6 +7,7 @@ import com.drcorchit.justice.utils.crypto.CryptoUtils.createSymmetricKey
 import com.drcorchit.justice.utils.crypto.CryptoUtils.fromBase64
 import com.drcorchit.justice.utils.crypto.CryptoUtils.getHash
 import com.drcorchit.justice.utils.crypto.CryptoUtils.toBase64
+import com.drcorchit.justice.utils.logging.Logger
 import com.google.gson.JsonObject
 import org.bouncycastle.jce.provider.BouncyCastleProvider
 import org.bouncycastle.util.io.pem.PemObject

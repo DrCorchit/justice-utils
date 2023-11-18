@@ -11,10 +11,10 @@ import com.amazonaws.services.dynamodbv2.document.PrimaryKey
 import com.amazonaws.services.s3.AmazonS3
 import com.amazonaws.services.s3.AmazonS3ClientBuilder
 import com.amazonaws.services.s3.model.*
-import com.drcorchit.justice.utils.Logger
 import com.drcorchit.justice.utils.json.JsonUtils.prettyPrint
 import com.drcorchit.justice.utils.json.Result
 import com.drcorchit.justice.utils.json.TimestampedBytes
+import com.drcorchit.justice.utils.logging.Logger
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import java.util.stream.Collectors

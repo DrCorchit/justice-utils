@@ -1,6 +1,6 @@
 package com.drcorchit.justice.utils.crypto
 
-import com.drcorchit.justice.utils.Logger.Companion.getLogger
+import com.drcorchit.justice.utils.logging.Logger
 import com.drcorchit.justice.utils.math.MathUtils
 import java.nio.charset.StandardCharsets
 import java.security.*
@@ -12,7 +12,7 @@ import javax.crypto.spec.SecretKeySpec
 
 object CryptoUtils {
 
-    private val log = getLogger(CryptoUtils::class.java)
+    private val log = Logger.getLogger(CryptoUtils::class.java)
 
     const val RSA_MAX_MESSAGE_LENGTH = 245
     val CHARSET = StandardCharsets.UTF_8
