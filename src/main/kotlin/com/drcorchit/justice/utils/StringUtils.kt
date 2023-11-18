@@ -1,5 +1,6 @@
 package com.drcorchit.justice.utils
 
+import com.drcorchit.justice.utils.logging.Logger
 import com.google.common.collect.ImmutableList
 import com.google.common.collect.ImmutableSet
 import java.io.PrintWriter
