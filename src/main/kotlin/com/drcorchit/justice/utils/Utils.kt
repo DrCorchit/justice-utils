@@ -7,6 +7,7 @@ import java.util.*
 import java.util.stream.Stream
 import java.util.stream.StreamSupport
 import kotlin.collections.HashSet
+import kotlin.math.abs
 
 object Utils {
     private class DoubleIterable<S, T>(
@@ -102,6 +103,19 @@ object Utils {
         var actualSize = size
         if (DISABLE_CACHING) actualSize = 0
         return CacheBuilder.newBuilder().initialCapacity(actualSize).softValues()
-            .build<K, V>(CacheLoader.from<K, V> { t: K -> loader.apply(t) })
+            .build(CacheLoader.from<K, V> { t: K -> loader.apply(t) })
+    }
+
+    //Returns the result of a binary search, searching for the element with the numeric value closest to the parameter
+    //NOTE: This code assumes the input list is already sorted. Behavior on an unsorted list is not defined.
+    fun <T> List<T>.binarySearch(desired: Number, converter: (T) -> Number): Int {
+        if (size < 2) return 0
+
+        val pivot = size/2
+        val index1 = subList(0, pivot).binarySearch(desired, converter)
+        val index2 = subList(pivot, size).binarySearch(desired, converter) + pivot
+        val delta1 = abs(converter(this[index1]).toDouble() - desired.toDouble())
+        val delta2 = abs(converter(this[index2]).toDouble() - desired.toDouble())
+        return if (delta1 <= delta2) index1 else index2
     }
 }
