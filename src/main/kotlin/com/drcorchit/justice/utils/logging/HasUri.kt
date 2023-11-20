@@ -4,12 +4,13 @@ import com.drcorchit.justice.utils.data.Trie
 
 
 interface HasUri {
-    val name: String
     val parent: HasUri?
-    val uri: Uri get() = Uri(parent?.uri, name)
+    val uri: Uri
 
     fun getLogger(): UriLogger {
-        return cache.computeIfAbsent(uri.getParts()) { UriLoggerImpl(this::class.java, uri) }
+        return cache.computeIfAbsent(uri.getParts()) {
+            parent?.getLogger()?.child(uri.value) ?: UriLoggerImpl(this::class.java, uri)
+        }
     }
 
     companion object {
