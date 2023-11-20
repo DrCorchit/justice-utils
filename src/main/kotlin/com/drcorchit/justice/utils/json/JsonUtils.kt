@@ -41,7 +41,8 @@ object JsonUtils {
         } else null
     }
 
-    private fun parseFromAnywhere(path: String, client: AWSClient? = null): TimestampedJson {
+    @JvmStatic
+    fun parseFromAnywhere(path: String, client: AWSClient? = null): TimestampedJson {
         return parseFromFile(path) ?: parseFromS3(path, client) ?: parseFromUrl(path)!!
     }
 
@@ -54,7 +55,6 @@ object JsonUtils {
     fun toObject(): Collector<Pair<String, JsonElement>, *, JsonObject> {
         return TO_OBJECT
     }
-
 
     private val TO_ARRAY = object : Collector<JsonElement, JsonArray, JsonArray> {
         override fun supplier(): Supplier<JsonArray> {
