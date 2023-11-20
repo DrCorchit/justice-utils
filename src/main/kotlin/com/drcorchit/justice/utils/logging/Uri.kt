@@ -1,4 +1,4 @@
-package com.drcorchit.justice.utils
+package com.drcorchit.justice.utils.logging
 
 data class Uri(val parent: Uri?, val value: String) {
 
@@ -8,6 +8,12 @@ data class Uri(val parent: Uri?, val value: String) {
 
     fun extend(value: String): Uri {
         return Uri(this, value)
+    }
+
+    fun getParts(): MutableList<String> {
+        val output = parent?.getParts() ?: mutableListOf()
+        output.add(value)
+        return output
     }
 
     override fun equals(other: Any?): Boolean {

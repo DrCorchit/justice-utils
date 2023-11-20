@@ -1,4 +1,4 @@
-package com.drcorchit.justice.utils.math
+package com.drcorchit.justice.utils.data
 
 import com.drcorchit.justice.utils.exceptions.CyclicDependencyException
 import com.google.common.collect.ImmutableSet

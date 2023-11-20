@@ -63,17 +63,6 @@ object IOUtils {
     }
 
     @JvmStatic
-    fun loadFileFromAnywhere(path: String, client: AWSClient? = null): TimestampedBytes {
-        return try {
-            loadFileFromAnywhereBaseCase(path, client)
-        } catch (e: Exception) {
-            val message = String.format("Error while loading resource %s", path)
-            log.error("loadFileFromAnywhere", message, e)
-            throw RuntimeException(e)
-        }
-    }
-
-    @JvmStatic
     fun getLastModified(path: String, client: AWSClient? = null): Long {
         val file = File(path)
         if (file.exists()) return file.lastModified()
@@ -82,21 +71,6 @@ object IOUtils {
             client.s3.getObjectMetadata(pair.first, pair.second).lastModified.time
         }
         return 0
-    }
-
-    private fun loadFileFromAnywhereBaseCase(path: String, client: AWSClient?): TimestampedBytes {
-        return if (File(path).exists()) readFile(path)
-        else if (AWSUtils.isS3Url(path)) {
-            if (client == null) {
-                throw IllegalArgumentException("Cannot download an S3 url without an AWSClient")
-            }
-            val pair: Pair<String, String> = AWSUtils.parseS3Url(path)
-            client.readS3Object(pair.first, pair.second)
-        } else {
-            val contents = org.apache.commons.io.IOUtils.toByteArray(URL(path))
-            val lastModified = System.currentTimeMillis()
-            contents to lastModified
-        }
     }
 
     @JvmStatic
@@ -108,6 +82,17 @@ object IOUtils {
             return contents to lastModified
         }
         throw FileNotFoundException(path)
+    }
+
+    @JvmStatic
+    fun readUrl(url: String): TimestampedBytes? {
+        return try {
+            val contents = org.apache.commons.io.IOUtils.toByteArray(URL(url))
+            contents to System.currentTimeMillis()
+        } catch (e: Exception) {
+            log.error("readUrl", "Unable to read url.", e)
+            null
+        }
     }
 
     @JvmStatic

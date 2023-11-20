@@ -1,6 +1,7 @@
-package com.drcorchit.justice.utils.math
+package com.drcorchit.justice.utils.data
 
-import java.util.function.Consumer
+import com.drcorchit.justice.utils.math.Layout
+import com.drcorchit.justice.utils.math.Space
 
 class Grid<T>(val space: Space) : Iterable<T> {
     //height and width are intentionally reversed here.

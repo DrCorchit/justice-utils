@@ -1,4 +1,4 @@
-package com.drcorchit.justice.utils.math
+package com.drcorchit.justice.utils.data
 
 class Heap<E : Any>(type: Int) {
     private val type: Int

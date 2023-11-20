@@ -1,4 +1,4 @@
-package com.drcorchit.justice.utils.math
+package com.drcorchit.justice.utils.data
 
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test

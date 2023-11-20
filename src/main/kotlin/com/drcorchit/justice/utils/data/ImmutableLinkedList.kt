@@ -1,4 +1,4 @@
-package com.drcorchit.justice.utils
+package com.drcorchit.justice.utils.data
 
 //Good ol' Lisp-style data structure
 data class ImmutableLinkedList<T> constructor(val head: T, val tail: ImmutableLinkedList<out T>?) : Collection<T> {
@@ -42,6 +42,10 @@ data class ImmutableLinkedList<T> constructor(val head: T, val tail: ImmutableLi
 
     fun cons(head: T): ImmutableLinkedList<T> {
         return ImmutableLinkedList(head, this)
+    }
+
+    override fun toString(): String {
+        return toList().toString()
     }
 
     companion object {

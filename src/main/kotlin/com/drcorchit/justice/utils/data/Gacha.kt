@@ -1,5 +1,6 @@
-package com.drcorchit.justice.utils.math
+package com.drcorchit.justice.utils.data
 
+import com.drcorchit.justice.utils.math.Rng
 import java.util.function.Predicate
 
 class Gacha<T> {

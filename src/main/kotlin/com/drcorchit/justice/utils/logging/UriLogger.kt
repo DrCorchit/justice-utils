@@ -1,7 +1,5 @@
 package com.drcorchit.justice.utils.logging
 
-import com.drcorchit.justice.utils.Uri
-
 interface UriLogger: Logger {
 
     val uri: Uri

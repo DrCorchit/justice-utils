@@ -14,11 +14,18 @@ interface Logger {
     fun fatal(method: String, message: String, error: Throwable? = null)
 
     companion object {
+        private var logProvider: (Class<*>) -> Logger = { Log4jLogger(it) }
+
+        @JvmStatic
+        fun setLogProvider(provider: (Class<*>) -> Logger) {
+            logProvider = provider
+        }
+
         private val LOGGERS = ConcurrentHashMap<Class<*>, Logger>()
 
         @JvmStatic
         fun getLogger(clazz: Class<*>): Logger {
-            return LOGGERS.computeIfAbsent(clazz) { Log4jLogger(it) }
+            return LOGGERS.computeIfAbsent(clazz) { logProvider.invoke(clazz) }
         }
     }
 }

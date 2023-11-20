@@ -1,4 +1,4 @@
-package com.drcorchit.justice.utils.math
+package com.drcorchit.justice.utils.logging
 
 import com.drcorchit.justice.utils.json.JsonUtils.GSON
 import com.google.gson.JsonElement

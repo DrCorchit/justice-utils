@@ -4,9 +4,11 @@ import com.drcorchit.justice.utils.aws.AWSClient
 import com.drcorchit.justice.utils.IOUtils
 import com.drcorchit.justice.utils.Utils
 import com.drcorchit.justice.utils.Utils.createCache
+import com.drcorchit.justice.utils.aws.AWSUtils
 import com.google.common.cache.LoadingCache
 import com.google.common.collect.ImmutableSet
 import com.google.gson.*
+import java.io.File
 import java.util.function.BiConsumer
 import java.util.function.BinaryOperator
 import java.util.function.Function
@@ -18,26 +20,29 @@ object JsonUtils {
     @JvmStatic
     val GSON: Gson = GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create()
 
-    private val JSON_CACHE: LoadingCache<String, TimestampedJson> =
-        createCache(1000) { path: String -> parseJsonFromAnywhere(path) }
-
     @JvmStatic
-    fun parseFromUrl(url: String): TimestampedJson {
-        return JSON_CACHE.getUnchecked(url)
-    }
-
-    private fun parseJsonFromAnywhere(path: String, client: AWSClient? = null): TimestampedJson {
-        return IOUtils.loadFileFromAnywhere(path, client).toJson()
+    fun parseFromFile(path: String): TimestampedJson? {
+        val file = File(path)
+        return if (file.exists()) {
+            JsonParser.parseString(IOUtils.loadFile(file)) to file.lastModified()
+        } else null
     }
 
     @JvmStatic
-    fun clearCache() {
-        JSON_CACHE.invalidateAll()
+    fun parseFromUrl(url: String): TimestampedJson? {
+        return IOUtils.readUrl(url)?.toJson()
     }
 
     @JvmStatic
-    fun clearCache(key: String) {
-        JSON_CACHE.invalidate(key)
+    fun parseFromS3(s3Url: String, client: AWSClient?): TimestampedJson? {
+        return if (AWSUtils.isS3Url(s3Url) && client != null) {
+            val location = AWSUtils.parseS3Url(s3Url)
+            client.readS3Object(location.first, location.second).toJson()
+        } else null
+    }
+
+    private fun parseFromAnywhere(path: String, client: AWSClient? = null): TimestampedJson {
+        return parseFromFile(path) ?: parseFromS3(path, client) ?: parseFromUrl(path)!!
     }
 
     @JvmStatic
