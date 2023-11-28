@@ -54,12 +54,7 @@ object IOUtils {
 
     @JvmStatic
     fun loadFile(f: File): String {
-        val br = BufferedReader(FileReader(f))
-        val output = StringBuilder()
-        var s: String
-        while (br.readLine().also { s = it } != null) output.append(s).append("\n")
-        br.close()
-        return output.toString()
+        return String(Files.readAllBytes(f.toPath()))
     }
 
     @JvmStatic

@@ -258,6 +258,7 @@ class Space(
 
         val HEX_VERT_ADJUSTMENT = sqrt(3.0) / 2 //Based on a 30-60-90 triangle
 
+        @JvmStatic
         fun deserialize(ele: JsonElement): Space {
             val info = ele.asJsonObject
             val w = info["width"].asInt
@@ -287,16 +288,18 @@ class Space(
             return if (dx * dy > 0) max(abs(dx), abs(dy)) else abs(dx) + abs(dy)
         }
 
-        private fun parseString(s: String): Pair<Int, Int> {
+        @JvmStatic
+        fun parseString(s: String): Pair<Int, Int> {
             require(s.matches(Regex("\\s*\\d+\\s*,\\s*\\d+\\s*"))) { "Unparsable coordinate: $s" }
-            val parts = s.split(",".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
-            val x = parts[0].trim { it <= ' ' }.toInt()
-            val y = parts[1].trim { it <= ' ' }.toInt()
+            val parts = s.split(",")
+            val x = parts[0].trim().toInt()
+            val y = parts[1].trim().toInt()
             return Pair(x, y)
         }
 
         private fun hasSameSign(x: Int, y: Int): Boolean {
-            return (x < 0 && y < 0) || (x > 0 && y > 0)
+            return x * y > 0
+            //return (x < 0 && y < 0) || (x > 0 && y > 0)
         }
     }
 }
