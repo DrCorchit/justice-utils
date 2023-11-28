@@ -50,6 +50,11 @@ sealed class Result(val success: Boolean) {
         fun failWithError(e: Exception): ExceptionResult {
             return ExceptionResult(e)
         }
+
+        @JvmStatic
+        fun failWithErrorAndReason(reason: String, e: Exception): ExceptionResult {
+            return ExceptionResult(reason, e)
+        }
     }
 }
 

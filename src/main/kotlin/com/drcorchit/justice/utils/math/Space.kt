@@ -1,7 +1,10 @@
 package com.drcorchit.justice.utils.math
 
 import com.drcorchit.justice.utils.Utils.createCache
+import com.drcorchit.justice.utils.json.JsonUtils.getBool
+import com.drcorchit.justice.utils.json.JsonUtils.getOrDefault
 import com.drcorchit.justice.utils.math.Compass.Companion.fromComponents
+import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import kotlin.math.abs
 import kotlin.math.hypot
@@ -30,6 +33,16 @@ class Space(
 
     fun coordinates(vararg coordinates: Pair<Int, Int>): List<Coordinate> {
         return coordinates.map { coordinate(it.first, it.second) }
+    }
+
+    fun serialize(): JsonElement {
+        val info = JsonObject()
+        info.addProperty("width", width)
+        info.addProperty("height", height)
+        info.addProperty("wrapHoriz", wrapHoriz)
+        info.addProperty("wrapVert", wrapVert)
+        info.addProperty("layout", layout.name)
+        return info
     }
 
     inner class Coordinate internal constructor(x: Int, y: Int) {
@@ -244,6 +257,16 @@ class Space(
     companion object {
 
         val HEX_VERT_ADJUSTMENT = sqrt(3.0) / 2 //Based on a 30-60-90 triangle
+
+        fun deserialize(ele: JsonElement): Space {
+            val info = ele.asJsonObject
+            val w = info["width"].asInt
+            val h = info["height"].asInt
+            val wrapH = info.getBool("wrapHoriz", false)
+            val wrapV = info.getBool("wrapVert", false)
+            val layout = info.getOrDefault("layout", { Layout.CARTESIAN }, { Layout.valueOf(it.asString) })
+            return Space(w, h, wrapH, wrapV, layout)
+        }
 
         private fun floor2(x: Int): Int {
             return if (x >= 0) x shr 1 else (x - 1) / 2
