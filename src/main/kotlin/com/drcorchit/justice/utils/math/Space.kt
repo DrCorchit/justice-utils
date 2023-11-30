@@ -60,6 +60,15 @@ class Space(
             require(this.y in 0 until height) { "Y coordinate out of bounds: $y" }
         }
 
+        fun add(x: Int, y: Int): Coordinate? {
+            val newX = this.x+x; val newY = this.y+y
+            return if (space.within(newX, newY)) space.coordinate(newX, newY) else null
+        }
+
+        fun relative(vararg coordinates: Pair<Int, Int>): List<Coordinate> {
+            return coordinates.mapNotNull { add(it.first, it.second) }
+        }
+
         //Returns the correct distance between coordinates, adjusted for hex layout if necessary.
         fun distance(other: Coordinate): Double {
             var x1: Double
