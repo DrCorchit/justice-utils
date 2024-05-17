@@ -12,15 +12,15 @@ object TimeUnits : Units<TimeUnits.Time>() {
         return Time(abbr, singular, plural, ratio)
     }
 
-    val SEC = Time("", "Second", "Seconds", 1.0)
-    val ROUND = Time("", "Round", "Rounds", SEC.ratio * 5)
-    val MIN = Time("", "Minute", "Minutes", SEC.ratio * 60)
-    val HOUR = Time("", "Hour", "Hours", MIN.ratio * 60)
-    val DAY = Time("", "Day", "Days", HOUR.ratio * 24)
-    val MONTH = Time("", "Month", "Months", DAY.ratio * 30)
-    val YEAR = Time("", "Year", "Years", DAY.ratio * 365)
-    val CENTURY = Time("", "Century", "Centuries", YEAR.ratio * 100)
-    val MILLENNIA = Time("", "Millennium", "Millennia", YEAR.ratio * 1000)
+    val SEC = add("", "Second", "Seconds", 1.0)
+    val ROUND = add("", "Round", "Rounds", SEC.ratio * 5)
+    val MIN = add("", "Minute", "Minutes", SEC.ratio * 60)
+    val HOUR = add("", "Hour", "Hours", MIN.ratio * 60)
+    val DAY = add("", "Day", "Days", HOUR.ratio * 24)
+    val MONTH = add("", "Month", "Months", DAY.ratio * 30)
+    val YEAR = add("", "Year", "Years", DAY.ratio * 365)
+    val CENTURY = add("", "Century", "Centuries", YEAR.ratio * 100)
+    val MILLENNIA = add("", "Millennium", "Millennia", YEAR.ratio * 1000)
 
     override var def = SEC
 

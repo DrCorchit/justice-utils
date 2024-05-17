@@ -7,14 +7,14 @@ object VolumeUnits : Units<VolumeUnits.Volume>() {
         return Volume(abbr, singular, plural, ratio)
     }
 
-    val DROP = Volume("drops", "Drop", "Drops", 1.0)
-    val ML = Volume("ml", "Milliliter", "Milliliters", DROP.ratio * 20)
-    val L = Volume("l", "Liter", "Liters", ML.ratio * 1000)
-    val OZ = Volume("oz", "Ounce", "Ounces", ML.ratio * 29.57353)
-    val CUP = Volume("cup", "Cup", "Cups", OZ.ratio * 8)
-    val PT = Volume("pt", "Pint", "Pints", CUP.ratio * 2)
-    val QT = Volume("qt", "Quart", "Quarts", PT.ratio * 2)
-    val GAL = Volume("gal", "Gallon", "Gallons", QT.ratio * 4)
+    val DROP = add("drops", "Drop", "Drops", 1.0)
+    val ML = add("ml", "Milliliter", "Milliliters", DROP.ratio * 20)
+    val L = add("l", "Liter", "Liters", ML.ratio * 1000)
+    val OZ = add("oz", "Ounce", "Ounces", ML.ratio * 29.57353)
+    val CUP = add("cup", "Cup", "Cups", OZ.ratio * 8)
+    val PT = add("pt", "Pint", "Pints", CUP.ratio * 2)
+    val QT = add("qt", "Quart", "Quarts", PT.ratio * 2)
+    val GAL = add("gal", "Gallon", "Gallons", QT.ratio * 4)
 
     override var def = OZ
 }

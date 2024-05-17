@@ -21,8 +21,8 @@ abstract class Units<T : Unit> {
 
     protected abstract fun create(abbr: String, singular: String, plural: String, ratio: Double): T
 
-    fun add(abbr: String, singular: String, plural: String, ratio: Double) {
-        create(abbr, singular, plural, ratio).let { map[it.abbr] = it }
+    fun add(abbr: String, singular: String, plural: String, ratio: Double): T {
+        return create(abbr, singular, plural, ratio).let { map[it.abbr] = it; it }
     }
 
     fun deserialize(ele: JsonElement?, defOverride: T = def): Measurement<T> {

@@ -8,11 +8,11 @@ object MassUnits : Units<MassUnits.Mass>() {
         return Mass(abbr, singular, plural, ratio)
     }
 
-    val GRAM = Mass("g", "Gram", "Grams", 1.0)
-    val KG = Mass("kg", "Kilogram", "Kilograms", GRAM.ratio * 1000)
-    val TONNE = Mass("tn", "Tonne", "Tonnes", KG.ratio * 1000)
-    val POUND = Mass("lbs", "Pound", "Pounds", 453.59)
-    val TON = Mass("ton", "Ton", "Tons", POUND.ratio * 2000)
+    val GRAM = add("g", "Gram", "Grams", 1.0)
+    val KG = add("kg", "Kilogram", "Kilograms", GRAM.ratio * 1000)
+    val TONNE = add("tn", "Tonne", "Tonnes", KG.ratio * 1000)
+    val POUND = add("lbs", "Pound", "Pounds", 453.59)
+    val TON = add("ton", "Ton", "Tons", POUND.ratio * 2000)
 
     override var def = POUND
 }
