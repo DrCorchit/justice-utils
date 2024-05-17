@@ -25,21 +25,21 @@ abstract class Units<T : Unit> {
         create(abbr, singular, plural, ratio).let { map[it.abbr] = it }
     }
 
-    fun deserialize(ele: JsonElement?): Measurement<T> {
+    fun deserialize(ele: JsonElement?, defOverride: T = def): Measurement<T> {
         val p = ele?.asJsonPrimitive
         return if (p == null || p.isJsonNull) {
-            Measurement(0.0, def)
+            Measurement(0.0, defOverride)
         } else if (p.isString) {
             parse(p.asString)
         } else {
-            Measurement(ele.asDouble, def)
+            Measurement(ele.asDouble, defOverride)
         }
     }
 
-    fun parse(str: String): Measurement<T> {
+    fun parse(str: String, defOverride: T = def): Measurement<T> {
         val split = str.split(" ")
         return when (split.size) {
-            1 -> Measurement(split.first().toDouble(), def)
+            1 -> Measurement(split.first().toDouble(), defOverride)
             2 -> {
                 Measurement(split.first().toDouble(), lookup(split.last()))
             }
