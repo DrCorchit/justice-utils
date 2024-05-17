@@ -6,8 +6,8 @@ import java.util.concurrent.atomic.AtomicLong
  * The code in this file is mostly copies from java.util.Random
  * The reason Random itself cannot be used directly is twofold:
  * First, Random does not allow us to get the seed, which is important
- * when loading gamestate.
- * Second, this class is enhanced with several features such as random variables.
+ * when loading gamestate. Second, this class is enhanced with
+ * several features such as random variables.
  */
 class Rng(seed: Long = seedUniquifier() xor System.nanoTime()) {
     private val seed: AtomicLong

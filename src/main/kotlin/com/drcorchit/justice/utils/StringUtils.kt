@@ -255,4 +255,11 @@ object StringUtils {
             seconds
         ) else String.format("%d days, %2d:%02d:%02d", days, hours, minutes, seconds)
     }
+
+    @JvmStatic
+    inline fun <reified E : Enum<E>> String?.parseEnum(def: E? = null): E {
+        return this?.let { enumValues<E>().firstOrNull { it.name.equals(this, true) } }
+            ?: def
+            ?: throw NoSuchElementException("No enum value named $this")
+    }
 }

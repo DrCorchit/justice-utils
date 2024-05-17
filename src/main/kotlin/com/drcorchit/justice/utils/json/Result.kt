@@ -84,7 +84,7 @@ open class FailedResult(val reason: String) : Result(false) {
 }
 
 class ExceptionResult(reason: String, val error: Exception) : FailedResult(reason) {
-    constructor(error: Exception) : this(error.message!!, error)
+    constructor(error: Exception) : this(error.message ?: "", error)
 
     override fun serialize(): JsonObject {
         val output = super.serialize()

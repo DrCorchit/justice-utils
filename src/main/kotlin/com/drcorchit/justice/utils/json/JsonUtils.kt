@@ -2,6 +2,7 @@ package com.drcorchit.justice.utils.json
 
 import com.drcorchit.justice.utils.aws.AWSClient
 import com.drcorchit.justice.utils.IOUtils
+import com.drcorchit.justice.utils.StringUtils.parseEnum
 import com.drcorchit.justice.utils.Utils
 import com.drcorchit.justice.utils.Utils.createCache
 import com.drcorchit.justice.utils.aws.AWSUtils
@@ -158,5 +159,10 @@ object JsonUtils {
         val output = JsonArray()
         this.forEach { output.add(it) }
         return output
+    }
+
+    @JvmStatic
+    inline fun <reified E : Enum<E>> JsonElement?.deserializeEnum(def: E? = null): E {
+        return this?.asString.parseEnum(def)
     }
 }
