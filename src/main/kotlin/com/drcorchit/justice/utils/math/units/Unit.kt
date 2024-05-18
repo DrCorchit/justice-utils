@@ -15,8 +15,11 @@ abstract class Units<T : Unit> {
 
     abstract var def: T
 
-    fun lookup(abbr: String): T {
-        return map[abbr]!!
+    fun lookup(key: String): T {
+        return map[key] ?: map.values.first {
+            key.equals(it.singular, true) ||
+                    key.equals(it.plural, true)
+        }
     }
 
     protected abstract fun create(abbr: String, singular: String, plural: String, ratio: Double): T
