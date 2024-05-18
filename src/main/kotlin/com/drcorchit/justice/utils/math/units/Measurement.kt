@@ -11,12 +11,11 @@ class Measurement<T : Unit>(val value: Double, val unit: T) {
     }
 
     override fun toString(): String {
-        return toString("%2f")
+        return toString("%.0f", false)
     }
 
-    fun toString(format: String): String {
-        val valStr = String.format(format, value)
-        val unitStr = if (value == 1.0) unit.singular else unit.plural
-        return "$valStr $unitStr"
+    fun toString(format: String = "%.0f", coerceSingular: Boolean = false): String {
+        val unitStr = if (value == 1.0 || coerceSingular) unit.singular else unit.plural
+        return "${format.format(value)} ${unitStr.lowercase()}"
     }
 }
