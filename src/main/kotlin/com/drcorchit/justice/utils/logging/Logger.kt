@@ -1,19 +1,42 @@
 package com.drcorchit.justice.utils.logging
 
+import org.apache.logging.log4j.Level
 import java.util.concurrent.ConcurrentHashMap
 
-interface Logger {
-    fun debug(method: String, message: String)
+abstract class Logger {
+    abstract fun log(info: LogInfo)
 
-    fun info(method: String, message: String)
+    open fun getCallsite(): String {
+        val stack = Thread.currentThread().stackTrace
+        return stack.firstOrNull {
+            !logMethodNames.contains(it.methodName)
+        }?.let { "${it.methodName}:${it.lineNumber}" } ?: "unknown"
+    }
 
-    fun warn(method: String, message: String)
+    fun debug(message: String) {
+        log(LogInfo(Level.DEBUG, getCallsite(), message, null))
+    }
 
-    fun error(method: String, message: String, error: Throwable? = null)
+    fun info(message: String) {
+        log(LogInfo(Level.INFO, getCallsite(), message, null))
+    }
 
-    fun fatal(method: String, message: String, error: Throwable? = null)
+    fun warn(message: String) {
+        log(LogInfo(Level.WARN, getCallsite(), message, null))
+    }
+
+    fun error(message: String, error: Throwable?) {
+        log(LogInfo(Level.ERROR, getCallsite(), message, error))
+    }
+
+    fun fatal(message: String, error: Throwable?) {
+        log(LogInfo(Level.FATAL, getCallsite(), message, error))
+    }
 
     companion object {
+
+        val logMethodNames = setOf("getStackTrace", "getCallsite", "log", "debug", "info", "warn", "error", "fatal")
+
         private var logProvider: (Class<*>) -> Logger = { Log4jLogger(it) }
 
         @JvmStatic

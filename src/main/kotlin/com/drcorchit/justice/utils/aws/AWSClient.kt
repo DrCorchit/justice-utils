@@ -34,12 +34,12 @@ class AWSClient(
         val bucketExists: Boolean = try {
             s3.doesBucketExistV2(defaultBucketName)
         } catch (e: Exception) {
-            log.error("init", "Unable to initialize AWS client", e)
+            log.error("Unable to initialize AWS client", e)
             false
         }
 
         if (!bucketExists) {
-            log.warn("init", "Could not confirm existence of bucket $defaultBucketName")
+            log.warn("Could not confirm existence of bucket $defaultBucketName")
         }
 
         val db = AmazonDynamoDBClientBuilder.standard()
@@ -66,7 +66,7 @@ class AWSClient(
         return try {
             s3.doesObjectExist(bucketName, path)
         } catch (e: java.lang.Exception) {
-            log.error("doesObjectExistInS3", "Error while checking if s3 object exists", e)
+            log.error("Error while checking if s3 object exists", e)
             false
         }
     }

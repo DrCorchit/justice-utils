@@ -70,7 +70,7 @@ class RSA(f: File) {
             val decryptedHash = verify(fromBase64(signedHash), publicKey)
             hash.contentEquals(decryptedHash)
         } catch (e: Exception) {
-            log.error("verify", "Error while verifying signature.", e)
+            log.error("Error while verifying signature.", e)
             false
         }
     }

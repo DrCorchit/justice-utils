@@ -11,7 +11,7 @@ object OSUtils {
         CURRENT_OS = try {
             detectOS()
         } catch (e: Exception) {
-            log.error("detectOS", "Error while detecting OS", e)
+            log.error("Error while detecting OS", e)
             OS.OTHER
         }
     }

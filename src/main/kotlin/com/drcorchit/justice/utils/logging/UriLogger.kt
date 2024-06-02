@@ -2,34 +2,21 @@ package com.drcorchit.justice.utils.logging
 
 import com.drcorchit.justice.utils.Utils.createCache
 
-interface UriLogger : Logger {
+abstract class UriLogger(val uri: Uri) : Logger() {
 
-    val uri: Uri
+    abstract fun child(name: String): UriLogger
 
-    fun child(name: String): UriLogger
-
-    fun debug(message: String) {
-        debug(uri.value, message)
+    override fun getCallsite(): String {
+        return "$uri.${super.getCallsite()}"
     }
 
-    fun info(message: String) {
-        info(uri.value, message)
-    }
+    private class UriLoggerImpl(private val clazz: Class<*>, uri: Uri) : UriLogger(uri) {
+        val logger = Logger.getLogger(clazz)
 
-    fun warn(message: String) {
-        warn(uri.value, message)
-    }
+        override fun log(info: LogInfo) {
+            return logger.log(info)
+        }
 
-    fun error(message: String, error: Throwable? = null) {
-        error(uri.value, message, error)
-    }
-
-    fun fatal(message: String, error: Throwable? = null) {
-        fatal(uri.value, message, error)
-    }
-
-    private class UriLoggerImpl(private val clazz: Class<*>, override val uri: Uri) : UriLogger,
-        Logger by Logger.getLogger(clazz) {
         override fun child(name: String): UriLogger {
             return UriLoggerImpl(clazz, uri.extend(name))
         }
