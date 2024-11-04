@@ -31,7 +31,7 @@ object StringUtils {
 	fun String.normalize(): String {
 		//Convert spaces/dashes/hyphens to underscore _, then remove all non-[a-zA-Z0-9_] characters
 		//Leading, trailing, and repeated underscores are also removed
-		return this.replace("[_ —–-]+".toRegex(), "_").trim()
+		return this.replace("[_ —–-]+".toRegex(), "_")
 			.replace("\\W+".toRegex(), "")
 			.trim('_')
 			.lowercase(Locale.getDefault())

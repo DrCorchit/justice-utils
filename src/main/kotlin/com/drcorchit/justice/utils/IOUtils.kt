@@ -8,9 +8,23 @@ import com.drcorchit.justice.utils.logging.Logger
 import java.io.*
 import java.net.URL
 import java.nio.file.Files
+import java.util.*
+import java.util.function.Consumer
 
 object IOUtils {
 	private val log = Logger.getLogger(IOUtils::class.java)
+
+	var HOME: File?
+	var WORKING_DIR: File?
+
+	init {
+		val homePath: String = System.getProperty("user.home")
+
+		HOME = File(homePath)
+		//System.getProperty("user.dir")
+		WORKING_DIR = File("/")
+	}
+
 
 	@JvmStatic
 	fun overwriteFile(path: String, text: String): Result {
@@ -101,6 +115,28 @@ object IOUtils {
 			for (file in files) deleteRecursively(file)
 		}
 		return f.delete()
+	}
+
+	fun getNameAndExt(path: String): Pair<String, String> {
+		val lastIndex = path.lastIndexOf("/") + 1
+		val last = path.substring(lastIndex)
+		val extIndex = last.lastIndexOf('.')
+		if (extIndex == -1) {
+			return last to ""
+		} else {
+			val name = last.substring(0, extIndex)
+			val ext = last.substring(extIndex + 1)
+			return name to ext
+		}
+	}
+
+	//Applies an action to all non-directory files in a folder, recursively
+	@JvmStatic
+	fun File.traverse(action: Consumer<File?>) {
+		for (f in Objects.requireNonNull(this.listFiles())) {
+			if (f.isDirectory) f.traverse(action)
+			else action.accept(f)
+		}
 	}
 
 	@JvmStatic
