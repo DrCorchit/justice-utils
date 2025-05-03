@@ -24,22 +24,40 @@ class Line(val p1: Vector2, val p2: Vector2) : Shape {
 	override val edges = setOf(this)
 
 	override fun containsPoint(point: Vector2): Boolean {
-		return false
+		val d1 = point.distanceTo(p1)
+		val d2 = point.distanceTo(p2)
+		return d1 + d2 == length
 	}
 
-	fun dot(v: Vector2): Float {
-		val adjustedPos: Vector2 = v.cpy().sub(midpoint)
+	fun dot(point: Vector2): Float {
+		val adjustedPos: Vector2 = point.cpy().sub(midpoint)
 		val thing1 = ((adjustedPos.x - p1.x) * (p2.x - p1.x))
 		val thing2 = ((adjustedPos.y - p1.y) * (p2.y - p1.y))
 		val dot = (thing1 + thing2) / (length * length)
-		return dot + 0.5f
+		return dot
 	}
 
 	fun lerp(amount: Float): Vector2 {
 		return p1.cpy().lerp(p2, amount)
 	}
 
-	fun closestPoint(v: Vector2): Vector2 {
-		return lerp(MathUtils.clamp(0f, dot(v), 1f))
+	fun closestPoint(point: Vector2): Vector2 {
+		return lerp(MathUtils.clamp(0f, dot(point), 1f))
+	}
+
+	override fun equals(other: Any?): Boolean {
+		if (other == null) return false
+		if (other is Line) {
+			return (p1 == other.p1 && p2 == other.p2) || (p1 == other.p2 && p2 == other.p1)
+		}
+		return false
+	}
+
+	override fun hashCode(): Int {
+		return p1.hashCode() + p2.hashCode()
+	}
+
+	override fun toString(): String {
+		return "Line($p1 -> $p2)"
 	}
 }

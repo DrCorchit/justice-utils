@@ -29,4 +29,20 @@ class Rectangle(val position: Vector2, val w: Float, val h: Float) : Shape {
 		val yBounds = point.y >= position.y && point.y < position.y + h
 		return xBounds && yBounds
 	}
+
+	override fun equals(other: Any?): Boolean {
+		if (other == null) return false
+		if (other is Rectangle) {
+			return (position == other.position) && w == other.w && h == other.h
+		}
+		return false
+	}
+
+	override fun hashCode(): Int {
+		return position.hashCode() + w.hashCode() + h.hashCode()
+	}
+
+	override fun toString(): String {
+		return "Rectangle($position) w=$w h=$h"
+	}
 }

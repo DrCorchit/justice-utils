@@ -29,9 +29,10 @@ class Polygon(vararg points: Vector2) : Shape {
 		}.toSet()
 	}
 
+	/** Not guaranteed for concave polygons. */
 	override fun containsPoint(point: Vector2): Boolean {
 		val test = Line(point, midpoint)
-		//If the line intersects, the point is outside the triangle
-		return edges.none { Collisions.intersects(it, test) }
+		//If the line intersects, the point is outside the polygon
+		return edges.none { Collisions.intersection(it, test) != null }
 	}
 }
