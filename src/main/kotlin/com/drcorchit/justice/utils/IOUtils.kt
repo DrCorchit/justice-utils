@@ -132,10 +132,10 @@ object IOUtils {
 
 	//Applies an action to all non-directory files in a folder, recursively
 	@JvmStatic
-	fun File.traverse(action: Consumer<File?>) {
-		for (f in Objects.requireNonNull(this.listFiles())) {
-			if (f.isDirectory) f.traverse(action)
-			else action.accept(f)
+	fun File.traverse(action: (File) -> Unit) {
+		listFiles()?.forEach {
+			if (it.isDirectory) it.traverse(action)
+			else action.invoke(it)
 		}
 	}
 
