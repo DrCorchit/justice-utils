@@ -6,7 +6,7 @@
 
     <artifactId>justice-utils</artifactId>
     <groupId>com.drcorchit</groupId>
-    <version>1.6.0</version>
+    <version>1.6.1</version>
     <packaging>jar</packaging>
 
     <name>justice-utils</name>
@@ -115,13 +115,13 @@
         <dependency>
             <groupId>com.amazonaws</groupId>
             <artifactId>aws-java-sdk-s3</artifactId>
-            <version>1.12.723</version>
+            <version>1.12.783</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/com.amazonaws/aws-java-sdk -->
         <dependency>
             <groupId>com.amazonaws</groupId>
             <artifactId>aws-java-sdk</artifactId>
-            <version>1.12.723</version>
+            <version>1.12.783</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/com.amazonaws/aws-java-sdk-dynamodb -->
         <dependency>

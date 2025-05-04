@@ -18,16 +18,21 @@ fun Vector3.mult(scalar: Float): Vector3 {
 	return this
 }
 
-fun Vector2.toVector3(): Vector3 {
-	return Vector3(x, y, 0f)
-}
-
 fun Vector3.toVector2(): Vector2 {
 	return Vector2(x, y)
 }
 
+fun Vector2.toVector3(z: Float = 0f): Vector3 {
+	return Vector3(x, y, 0f)
+}
+
 fun Vector3.setZ(z: Float): Vector3 {
 	this.z = z
+	return this
+}
+
+fun Vector3.setZRelative(z: Float): Vector3 {
+	this.z += z
 	return this
 }
 
@@ -37,11 +42,12 @@ fun Vector2.approach(dest: Vector2, amount: Float): Vector2 {
 	return add(dif.nor().mult(amount))
 }
 
-fun Vector2.decelerate(amount: Float): Vector2 {
-	val oldLen: Float = this.len()
-	if (oldLen < amount) return Vector2.Zero
-	val newLen = oldLen - amount
-	return this.mult(newLen / oldLen)
+fun Vector2.accelerate(amount: Float, max: Float = Float.POSITIVE_INFINITY): Vector2 {
+	return nor().mult(MathUtils.min(max, len() + amount))
+}
+
+fun Vector2.decelerate(amount: Float, min: Float = 0f): Vector2 {
+	return this.nor().mult(MathUtils.max(min, len() - amount))
 }
 
 fun Vector2.midpoint(dest: Vector2): Vector2 {
