@@ -1,6 +1,7 @@
 package com.drcorchit.justice.utils.math.shapes
 
 import com.badlogic.gdx.math.Vector2
+import com.drcorchit.justice.utils.math.Compass
 import kotlin.math.hypot
 
 class Rectangle(val position: Vector2, val w: Float, val h: Float) : Shape {
@@ -28,6 +29,27 @@ class Rectangle(val position: Vector2, val w: Float, val h: Float) : Shape {
 		val xBounds = point.x >= position.x && point.x < position.x + w
 		val yBounds = point.y >= position.y && point.y < position.y + h
 		return xBounds && yBounds
+	}
+
+	fun getPointPosition(point: Vector2): Compass {
+		val above: Boolean = point.y > position.y + h / 2
+		val below: Boolean = point.y < position.y - h / 2
+		val right: Boolean = point.x > position.x + w / 2
+		val left: Boolean = point.x < position.x + w / 2
+
+		return if (left) {
+			if (below) Compass.SOUTHWEST
+			else if (above) Compass.NORTHWEST
+			else Compass.WEST
+		} else if (right) {
+			if (below) Compass.SOUTHEAST
+			else if (above) Compass.NORTHEAST
+			else Compass.EAST
+		} else {
+			if (below) Compass.SOUTH
+			else if (above) Compass.NORTH
+			else Compass.CENTER
+		}
 	}
 
 	override fun equals(other: Any?): Boolean {

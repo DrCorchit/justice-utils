@@ -2,15 +2,13 @@ package com.drcorchit.justice.utils.math
 
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.math.Vector3
-import kotlin.math.cos
-import kotlin.math.sin
 
 fun Vector3.toVector2(): Vector2 {
 	return Vector2(x, y)
 }
 
 fun Vector2.toVector3(z: Float = 0f): Vector3 {
-	return Vector3(x, y, 0f)
+	return Vector3(x, y, z)
 }
 
 fun Vector3.setZ(z: Float): Vector3 {
