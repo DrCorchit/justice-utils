@@ -74,6 +74,11 @@ class ShapeTest {
 		val r3 = Rectangle(p2, 4f, 1f)
 		val circle = Circle(Vector2(1f, -3f), 2f)
 
+		assert(r1.containsPoint(Vector2(2f, 1f)))
+		assert(r1.containsPoint(Vector2(-1f, -1f)))
+		assert(r1.containsPoint(Vector2(1f, .5f)))
+		assert(!r1.containsPoint(Vector2(1f, 1.1f)))
+
 		assert(r1.collides(r2))
 		assert(!r1.collides(r3))
 		assert(r1.collides(circle))

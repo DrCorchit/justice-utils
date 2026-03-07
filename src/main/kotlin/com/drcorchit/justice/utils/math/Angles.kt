@@ -4,24 +4,25 @@ import com.drcorchit.justice.utils.math.MathUtils.clamp
 import com.drcorchit.justice.utils.math.MathUtils.remainder
 import kotlin.math.abs
 
-fun normalizeAngle(angle: Float): Float {
-	return remainder(angle.toDouble(), 360.0).toFloat()
+fun normalizeAngle(angle: Double): Double {
+	return remainder(angle, 360.0)
 }
 
 fun angleBetween(min: Float, a: Float, max: Float): Boolean {
-	var min = min
-	var a = a
-	var max = max
-	min = normalizeAngle(min)
-	a = normalizeAngle(a)
-	max = normalizeAngle(max)
-	if (min + 180 < max) return (a < min || a > max)
-	else if (max + 180 < min) return (a < max || a > min)
-	else if (a > min && a < max) return true
-	return a > max && a < min
+	return angleBetween(min.toDouble(), a.toDouble(), max.toDouble())
 }
 
-fun approachAngle(actual: Float, target: Float, amount: Float): Float {
+fun angleBetween(min: Double, angle: Double, max: Double): Boolean {
+	val nMin = normalizeAngle(min)
+	val nAngle = normalizeAngle(angle)
+	val nMax = normalizeAngle(max)
+	if (nMin + 180 < nMax) return (nAngle < nMin || nAngle > nMax)
+	else if (nMax + 180 < nMin) return (nAngle < nMax || nAngle > nMin)
+	else if (nAngle > nMin && nAngle < nMax) return true
+	return nAngle > nMax && nAngle < nMin
+}
+
+fun approachAngle(actual: Double, target: Double, amount: Double): Double {
 	var actual = actual
 	var target = target
 	if (amount >= 180) return target
@@ -39,7 +40,7 @@ fun approachAngle(actual: Float, target: Float, amount: Float): Float {
 	)
 }
 
-fun angleAverage(a1: Float, a2: Float): Float {
+fun angleAverage(a1: Double, a2: Double): Double {
 	var a1 = a1
 	var a2 = a2
 	a1 = normalizeAngle(a1)
@@ -48,6 +49,7 @@ fun angleAverage(a1: Float, a2: Float): Float {
 	if (abs((a1 - a2).toDouble()) > 180) temp += 180f
 	return normalizeAngle(temp)
 }
+
 //mirrors an angle around an axis
 fun mirrorAngle(angle: Float, axis: Float): Float {
 	val dif = axis - angle

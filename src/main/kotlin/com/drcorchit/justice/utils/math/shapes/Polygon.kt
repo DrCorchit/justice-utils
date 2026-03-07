@@ -24,6 +24,7 @@ class Polygon(vararg points: Vector2) : Shape {
 	override val vertices = points.toSet()
 	override val edges by lazy {
 		points.mapIndexed { index, p ->
+			val index = if (index + 1 < points.size) index + 1 else 0
 			val next = points[index + 1 % points.size]
 			Line(p, next)
 		}.toSet()

@@ -5,15 +5,17 @@ import com.drcorchit.justice.utils.math.Compass
 import kotlin.math.hypot
 
 class Rectangle(val position: Vector2, val w: Float, val h: Float) : Shape {
-	val neCorner = position.cpy().add(w / 2, h / 2)
-	val nwCorner = position.cpy().add(-w / 2, h / 2)
-	val seCorner = position.cpy().add(w / 2, -h / 2)
-	val swCorner = position.cpy().add(-w / 2, -h / 2)
+	val w2 = w/2
+	val h2 = h/2
+	val neCorner = position.cpy().add(w2, h2)
+	val nwCorner = position.cpy().add(-w2, h2)
+	val seCorner = position.cpy().add(w2, -h2)
+	val swCorner = position.cpy().add(-w2, -h2)
 
 	override val boundingBox = this
 
 	override val boundingCircle by lazy {
-		val r = hypot(w / 2, h / 2)
+		val r = hypot(w2, h2)
 		Circle(position, r)
 	}
 
@@ -26,16 +28,16 @@ class Rectangle(val position: Vector2, val w: Float, val h: Float) : Shape {
 	)
 
 	override fun containsPoint(point: Vector2): Boolean {
-		val xBounds = point.x >= position.x && point.x < position.x + w
-		val yBounds = point.y >= position.y && point.y < position.y + h
+		val xBounds = point.x >= position.x - w2 && point.x <= position.x + w2
+		val yBounds = point.y >= position.y - h2 && point.y <= position.y + h2
 		return xBounds && yBounds
 	}
 
 	fun getPointPosition(point: Vector2): Compass {
-		val above: Boolean = point.y > position.y + h / 2
-		val below: Boolean = point.y < position.y - h / 2
-		val right: Boolean = point.x > position.x + w / 2
-		val left: Boolean = point.x < position.x + w / 2
+		val above: Boolean = point.y > position.y + h2
+		val below: Boolean = point.y < position.y - h2
+		val right: Boolean = point.x > position.x + w2
+		val left: Boolean = point.x < position.x + w2
 
 		return if (left) {
 			if (below) Compass.SOUTHWEST
