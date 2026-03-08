@@ -78,7 +78,7 @@ class AWSClient(
     fun readS3Object(bucketName: String, path: String): TimestampedBytes {
         val obj = s3.getObject(bucketName, path)
         val lastModified = obj.objectMetadata.lastModified.time
-        val bytes = org.apache.commons.io.IOUtils.toByteArray(obj.objectContent)
+        val bytes = obj.objectContent.readBytes()
         return bytes to lastModified
     }
 

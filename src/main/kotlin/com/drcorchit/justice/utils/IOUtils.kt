@@ -99,7 +99,7 @@ object IOUtils {
 	@JvmStatic
 	fun readUrl(url: String): TimestampedBytes? {
 		return try {
-			val contents = org.apache.commons.io.IOUtils.toByteArray(URL(url))
+			val contents = URL(url).readBytes()
 			contents to System.currentTimeMillis()
 		} catch (e: Exception) {
 			log.error("Unable to read url.", e)
