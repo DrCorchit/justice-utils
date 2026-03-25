@@ -1,6 +1,6 @@
 package com.drcorchit.justice.utils.data
 
-import com.drcorchit.justice.utils.math.Rng
+import java.util.*
 import java.util.function.Predicate
 
 class Gacha<T> {
@@ -50,9 +50,13 @@ class Gacha<T> {
         totalWeight = 0.0
     }
 
-    fun getRandom(rng: Rng): T {
+    fun getRandom(rng: Random): T {
+        return getRandom { rng.nextDouble() }
+    }
+
+    fun getRandom(numberSource: () -> Double): T {
         check(totalWeight != 0.0) { "Gacha is empty!" }
-        var target = rng.nextReal() * totalWeight
+        var target = numberSource.invoke() * totalWeight
         for ((key, value) in weights) {
             target -= value
             if (target <= 0) return key
